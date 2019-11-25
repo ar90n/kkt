@@ -17,3 +17,7 @@ def test_pyproject_parse(pyproject_data):
     assert expect["slug"] == actual["slug"]
     assert expect["title"] == actual["title"]
     assert expect["competition"] == actual["competition"]
+
+
+def test_kernel_push():
+    pass

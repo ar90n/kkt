@@ -21,4 +21,4 @@ class KktParser(PyprojectParser):
 
     def read(self) -> dict:
         pyproj = super().read()
-        return pyproj.get("tool").get("kkt")
+        return pyproj.get("tool").get("kkt").get("meta_data")
