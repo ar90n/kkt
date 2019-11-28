@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kaggle-kernel-tool"
-version = "0.1.0"
+version = "0.1.1"
 description = "A tool for kaggle kernel"
 authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
 license = "MIT"

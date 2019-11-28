@@ -71,7 +71,11 @@ def push():
     parser = KktParser(pyproject_path)
     meta_data = parser.read()
 
+    code_file_path = Path(meta_data.get("code_file", "main.py"))
+    if not code_file_path.is_absolute():
+        code_file_path = Path.cwd() / code_file_path
+
     kernel_builder = get_builder("script")
-    kernel_body = kernel_builder(Path("./a"))
+    kernel_body = kernel_builder(code_file_path)
 
     kernels_push(api, meta_data, kernel_body)
