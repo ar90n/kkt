@@ -75,7 +75,9 @@ def push():
     if not code_file_path.is_absolute():
         code_file_path = Path.cwd() / code_file_path
 
-    kernel_builder = get_builder("script")
+    enable_internet = meta_data.get('enable_internet', False)
+
+    kernel_builder = get_builder("script", enable_internet)
     kernel_body = kernel_builder(code_file_path)
 
     kernels_push(api, meta_data, kernel_body)
