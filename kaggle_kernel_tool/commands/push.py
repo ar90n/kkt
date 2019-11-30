@@ -65,21 +65,27 @@ def kernels_push(api, meta_data, script_body):
     return result
 
 
+def create_kernel_body(meta_data):
+    enable_internet = meta_data.get("enable_internet", False)
+    kernel_type = meta_data.get("kernel_type", "script")
+    code_file_path = Path(meta_data.get("code_file", "main.py"))
+    if not code_file_path.is_absolute():
+        code_file_path = Path.cwd() / code_file_path
+
+    kernel_builder = get_builder(kernel_type, enable_internet)
+    return kernel_builder(code_file_path)
+
+
+def push_impl(meta_data):
+    kernel_body = create_kernel_body(meta_data)
+    return kernels_push(api, meta_data, kernel_body)
+
+
 @click.command()
 def push():
     pyproject_path = Path.cwd() / "pyproject.toml"
     parser = KktParser(pyproject_path)
     meta_data = parser.read()
 
-    code_file_path = Path(meta_data.get("code_file", "main.py"))
-    if not code_file_path.is_absolute():
-        code_file_path = Path.cwd() / code_file_path
-
-    enable_internet = meta_data.get('enable_internet', False)
-    kernel_type = meta_data.get("kernel_type", "script")
-
-    kernel_builder = get_builder(kernel_type, enable_internet)
-    kernel_body = kernel_builder(code_file_path)
-
-    r = kernels_push(api, meta_data, kernel_body)
+    r = push_impl(meta_data)
     print(r.__dict__)
