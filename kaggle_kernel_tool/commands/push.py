@@ -29,7 +29,7 @@ def kernels_push(api, meta_data, script_body):
 
     language = "python"
 
-    kernel_type = "script"
+    kernel_type = meta_data.get("kernel_type", "script")
 
     dataset_sources = api.get_or_default(meta_data, "dataset_sources", [])
     for source in dataset_sources:
@@ -76,8 +76,10 @@ def push():
         code_file_path = Path.cwd() / code_file_path
 
     enable_internet = meta_data.get('enable_internet', False)
+    kernel_type = meta_data.get("kernel_type", "script")
 
-    kernel_builder = get_builder("script", enable_internet)
+    kernel_builder = get_builder(kernel_type, enable_internet)
     kernel_body = kernel_builder(code_file_path)
 
-    kernels_push(api, meta_data, kernel_body)
+    r = kernels_push(api, meta_data, kernel_body)
+    print(r.__dict__)
