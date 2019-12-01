@@ -9,6 +9,7 @@ from kaggle.models.kernel_push_request import KernelPushRequest
 from slugify import slugify
 
 from ..builders import get_builder
+from ..repo import Repo
 from ..utils.parser import KktParser
 
 api = KaggleApi(ApiClient())
@@ -80,12 +81,25 @@ def push_impl(meta_data):
     kernel_body = create_kernel_body(meta_data)
     return kernels_push(api, meta_data, kernel_body)
 
+def dump_push_result(result: KernelPushResponse) -> None:
+    print("ref: {}".format(result.ref))
+    print("url: {}".format(result.url))
+    print("version: {}".format(result.versionNumber))
 
 @click.command()
 def push():
     pyproject_path = Path.cwd() / "pyproject.toml"
     parser = KktParser(pyproject_path)
-    meta_data = parser.read()
+    kkt = parser.read()
+    meta_data = kkt.get("meta_data")
 
-    r = push_impl(meta_data)
-    print(r.__dict__)
+    repo = Repo(Path.cwd())
+    enable_git_tag = kkt.get("enable_git_tag")
+    if enable_git_tag:
+        repo.validate()
+
+    result = push_impl(meta_data)
+    dump_push_result(result)
+
+    if enable_git_tag:
+        repo.attach_version_tag(r.versionNumber)

@@ -12,6 +12,7 @@ click = "^7.0"
 tomlkit = "^0.5.8"
 poetry = "0.12.17"
 lockfile = "^0.12.2"
+gitpython = "^3.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^4.5"
