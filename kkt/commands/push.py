@@ -80,10 +80,12 @@ def push_impl(meta_data):
     kernel_body = create_kernel_body(meta_data)
     return kernels_push(api, meta_data, kernel_body)
 
+
 def dump_push_result(result: KernelPushResponse) -> None:
     print("ref: {}".format(result.ref))
     print("url: {}".format(result.url))
     print("version: {}".format(result.versionNumber))
+
 
 @click.command()
 def push():

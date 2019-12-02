@@ -6,7 +6,7 @@ from tomlkit.toml_file import TOMLFile
 from ..exception import KktSectionNotFound
 from .dict import merge
 
-MANDATORY_KEYS: List  = [("meta_data", [("slug", []), ("code_file", [])])]
+MANDATORY_KEYS: List = [("meta_data", [("slug", []), ("code_file", [])])]
 
 DEFAULT_KKT_CONFIG = {
     "meta_data": {

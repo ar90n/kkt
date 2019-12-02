@@ -20,7 +20,5 @@ __bootstrap__()"""
 
 def create_bootstrap_code(pkg_name: str, pkg_encoded: str):
     return BOOTSTRAP_TEMPLATE.format(
-        pkg_encoded=pkg_encoded,
-        pkg_name=pkg_name,
-        encoding="utf8",
+        pkg_encoded=pkg_encoded, pkg_name=pkg_name, encoding="utf8",
     )
