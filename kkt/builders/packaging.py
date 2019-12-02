@@ -1,4 +1,4 @@
-from typings import Tuple
+from typing import Tuple
 from os import getcwd
 from pathlib import Path
 from tempfile import TemporaryDirectory
