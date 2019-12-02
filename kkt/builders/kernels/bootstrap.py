@@ -12,7 +12,7 @@ BOOTSTRAP_TEMPLATE: str = """def __bootstrap__():
     with TemporaryDirectory() as temp_dir:
         pkg_path = Path(temp_dir) / "{pkg_name}"
         pkg_path.write_bytes(gzip.decompress(base64.b64decode(pkg_encoded)))
-        os.system("pip install {install_options} {{pkg_path}} -t /kaggle/working".format(pkg_path=pkg_path))
+        os.system("pip install {install_options} {{pkg_path}}".format(pkg_path=pkg_path))
 
     sys.path.append("/kaggle/working")
 __bootstrap__()"""
