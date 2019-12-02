@@ -18,8 +18,10 @@ BOOTSTRAP_TEMPLATE: str = """def __bootstrap__():
 __bootstrap__()"""
 
 
-def create_bootstrap_code(pkg_name: str, pkg_encoded: str, enable_internet: bool=False):
-    install_options = '' if enable_internet else '--no-deps'
+def create_bootstrap_code(
+    pkg_name: str, pkg_encoded: str, enable_internet: bool = False
+):
+    install_options = "" if enable_internet else "--no-deps"
     return BOOTSTRAP_TEMPLATE.format(
         pkg_encoded=pkg_encoded,
         pkg_name=pkg_name,
