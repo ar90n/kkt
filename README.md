@@ -1,2 +1,2 @@
-# kaggle-kernel-tool
+# kkt
 A tool for kaggle kernel
