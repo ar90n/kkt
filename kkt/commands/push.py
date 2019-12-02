@@ -102,4 +102,4 @@ def push():
     dump_push_result(result)
 
     if enable_git_tag:
-        repo.attach_version_tag(r.versionNumber)
+        repo.attach_version_tag(result.versionNumber)
