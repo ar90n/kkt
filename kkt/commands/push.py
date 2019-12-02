@@ -67,13 +67,12 @@ def kernels_push(api, meta_data, script_body):
 
 
 def create_kernel_body(meta_data):
-    enable_internet = meta_data.get("enable_internet", False)
     kernel_type = meta_data.get("kernel_type", "script")
     code_file_path = Path(meta_data.get("code_file", "main.py"))
     if not code_file_path.is_absolute():
         code_file_path = Path.cwd() / code_file_path
 
-    kernel_builder = get_builder(kernel_type, enable_internet)
+    kernel_builder = get_builder(kernel_type)
     return kernel_builder(code_file_path)
 
 
