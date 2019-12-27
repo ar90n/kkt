@@ -5,14 +5,14 @@ from tempfile import TemporaryDirectory
 
 from poetry.io.null_io import NullIO
 from poetry.masonry.builders import WheelBuilder
-from poetry.poetry import Poetry
+from poetry.factory import Factory
 from poetry.utils.env import NullEnv
 
 from ..utils.encode import encode
 
 
 def poetry_packaging() -> Tuple[Path, str]:
-    poetry = Poetry.create(getcwd())
+    poetry = Factory().create_poetry(getcwd())
     env = NullEnv()
     io = NullIO()
 
