@@ -56,3 +56,9 @@ class KktParser(PyprojectParser):
         _validate_keys(kkt, MANDATORY_KEYS)
 
         return kkt
+
+    def write(self, kkt_config):
+        pyproj = super().read()
+        pyproj["tool"]["kkt"] = kkt_config
+
+        super().write(pyproj)

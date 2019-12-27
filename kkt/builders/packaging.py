@@ -11,7 +11,7 @@ from poetry.utils.env import NullEnv
 from ..utils.encode import encode
 
 
-def poetry_packaging() -> Tuple[Path, str]:
+def poetry_packaging() -> Tuple[str, str]:
     poetry = Factory().create_poetry(getcwd())
     env = NullEnv()
     io = NullIO()
