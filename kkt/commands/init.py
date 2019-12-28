@@ -73,7 +73,7 @@ def init():
         "enable_internet", default=DEFAULT_KKT_CONFIG["meta_data"]["enable_internet"]
     )
     meta_data["dataset_sources"] = dataset_prompt()
-    meta_data["kernel_data_sources"] = [kkt_config["meta_data"]["competition"]]
+    meta_data["competition_sources"] = [kkt_config["meta_data"]["competition"]]
 
     kkt_config = {
         "meta_data": meta_data,
