@@ -83,9 +83,12 @@ def push_impl(meta_data):
 
 
 def dump_push_result(result: KernelPushResponse) -> None:
-    print("ref: {}".format(result.ref))
-    print("url: {}".format(result.url))
-    print("version: {}".format(result.versionNumber))
+    if result.error is not None:
+        print("error: {}".format(result.error))
+    else:
+        print("ref: {}".format(result.ref))
+        print("url: {}".format(result.url))
+        print("version: {}".format(result.versionNumber))
 
 
 @click.command()
@@ -103,5 +106,5 @@ def push():
     result = push_impl(meta_data)
     dump_push_result(result)
 
-    if enable_git_tag:
+    if enable_git_tag and result.versionNumber:
         repo.attach_version_tag(result.versionNumber)

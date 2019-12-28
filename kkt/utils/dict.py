@@ -8,6 +8,7 @@ def merge(source, destination):
             node = destination.setdefault(key, {})
             merge(value, node)
         else:
-            destination[key] = value
+            if key not in destination:
+                destination[key] = value
 
         return destination
