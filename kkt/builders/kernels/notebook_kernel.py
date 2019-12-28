@@ -20,7 +20,11 @@ def create_bootstrap_cell(
     return {
         "cell_type": "code",
         "execution_count": None,
-        "metadata": {},
+        "metadata": {
+            "trusted": True,
+            "_kg_hide-input": True,
+            "_kg_hide-output": True 
+        },
         "outputs": [],
         "source": [bootstrap_code],
     }
