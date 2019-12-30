@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typings import Dict
+from typing import Dict
 
 import click
 from kaggle import KaggleApi
@@ -94,7 +94,7 @@ def dump_push_result(result: KernelPushResponse) -> None:
 
 def merge_cli_args(meta_data: Dict, cli_args: Dict) -> Dict:
     valid_args = {k: v for k, v in cli_args.items() if v is not None}
-    return {**meta_data, **valid_args}
+    return {**(meta_data.value), **valid_args}
 
 
 @click.command()
@@ -117,4 +117,4 @@ def push(**kwargs):
     dump_push_result(result)
 
     if enable_git_tag and result.versionNumber:
-        repo.attach_version_tag(result.versionNumber)
+        repo.attach_version_tag(result.versionNumber, meta_data)

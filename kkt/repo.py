@@ -1,5 +1,8 @@
 import re
 from pathlib import Path
+from typing import Dict
+
+from tomlkit import dumps as dumps_as_toml
 
 from git import Repo as GitRepo
 
@@ -8,6 +11,11 @@ from .exception import AlreadyPushed, FoundUncommitedFiles
 
 def _create_tag(version: int) -> str:
     return "kernel_version_{}".format(version)
+
+
+def _create_message(meta_data: Dict) -> str:
+    meta_data_dump = dumps_as_toml(meta_data)
+    return f"[tool.kkt.meta_data]\n{meta_data_dump}"
 
 
 class Repo:
@@ -29,6 +37,7 @@ class Repo:
     def validate(self):
         self._check_uncommited_files()
 
-    def attach_version_tag(self, version: int) -> None:
+    def attach_version_tag(self, version: int, meta_data: Dict) -> None:
         tag = _create_tag(version)
-        self.git_repo.create_tag(tag, message=tag)
+        message = _create_message(meta_data)
+        self.git_repo.create_tag(tag, message=message)
