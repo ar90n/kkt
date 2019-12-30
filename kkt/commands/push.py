@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from typings import Dict
 
 import click
 from kaggle import KaggleApi
@@ -91,12 +92,21 @@ def dump_push_result(result: KernelPushResponse) -> None:
         print("version: {}".format(result.versionNumber))
 
 
+def merge_cli_args(meta_data: Dict, cli_args: Dict) -> Dict:
+    valid_args = {k: v for k, v in cli_args.items() if v is not None}
+    return {**meta_data, **valid_args}
+
+
 @click.command()
-def push():
+@click.option("--code-file", type=click.Path(exists=True))
+@click.option("--enable-gpu", type=bool)
+@click.option("--enable-internet", type=bool)
+@click.option("--is-private", type=bool)
+def push(**kwargs):
     pyproject_path = Path.cwd() / "pyproject.toml"
     parser = KktParser(pyproject_path)
     kkt = parser.read()
-    meta_data = kkt.get("meta_data")
+    meta_data = merge_cli_args(kkt.get("meta_data"), kwargs)
 
     repo = Repo(Path.cwd())
     enable_git_tag = kkt.get("enable_git_tag")

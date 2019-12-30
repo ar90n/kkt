@@ -26,17 +26,8 @@ class Repo:
         if 0 < len(uncommitted_files):
             raise FoundUncommitedFiles(uncommitted_files)
 
-    def _check_already_pushed(self) -> None:
-        if len(self.git_repo.tags) == 0:
-            return
-
-        tag = self.git_repo.git.describe()
-        if re.match("^kernel_version_\d+$", tag) is not None:
-            raise AlreadyPushed()
-
     def validate(self):
         self._check_uncommited_files()
-        self._check_already_pushed()
 
     def attach_version_tag(self, version: int) -> None:
         tag = _create_tag(version)
