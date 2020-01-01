@@ -1,3 +1,5 @@
+from typing import Dict
+
 BOOTSTRAP_TEMPLATE: str = """def __bootstrap__():
     import sys
     import base64
@@ -15,16 +17,18 @@ BOOTSTRAP_TEMPLATE: str = """def __bootstrap__():
         os.system("pip install {install_options} {{pkg_path}}".format(pkg_path=pkg_path))
 
     sys.path.append("/kaggle/working")
+    os.environ.update({env_variables})
 __bootstrap__()"""
 
 
 def create_bootstrap_code(
-    pkg_name: str, pkg_encoded: str, enable_internet: bool = False
+    pkg_name: str, pkg_encoded: str, env_variables: Dict, enable_internet: bool = False
 ):
     install_options = "" if enable_internet else "--no-deps"
     return BOOTSTRAP_TEMPLATE.format(
         pkg_encoded=pkg_encoded,
         pkg_name=pkg_name,
         install_options=install_options,
+        env_variables=env_variables,
         encoding="utf8",
     )

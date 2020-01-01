@@ -1,3 +1,4 @@
+from typing import Dict
 import json
 
 from .bootstrap import create_bootstrap_code
@@ -12,10 +13,13 @@ def erace_all_outputs(notebook: dict):
 
 
 def create_bootstrap_cell(
-    pkg_name: str, pkg_encoded: str, enable_internet: bool = False
+    pkg_name: str, pkg_encoded: str, env_variables: Dict, enable_internet: bool = False
 ):
     bootstrap_code = create_bootstrap_code(
-        pkg_name=pkg_name, pkg_encoded=pkg_encoded, enable_internet=enable_internet
+        pkg_name=pkg_name,
+        pkg_encoded=pkg_encoded,
+        env_variables=env_variables,
+        enable_internet=enable_internet,
     )
     return {
         "cell_type": "code",
@@ -27,16 +31,19 @@ def create_bootstrap_cell(
 
 
 def create_notebook_kernel(
-    notebook_body: str, pkg_name: str, pkg_encoded: str, enable_internet: bool = False
+    notebook_body: str,
+    pkg_name: str,
+    pkg_encoded: str,
+    env_variables: Dict,
+    enable_internet: bool = False,
 ):
-    bootstrap_code = create_bootstrap_code(
-        pkg_name=pkg_name, pkg_encoded=pkg_encoded, enable_internet=enable_internet
-    )
-
     notebook_obj = erace_all_outputs(json.loads(notebook_body))
 
     bootstrap_cell = create_bootstrap_cell(
-        pkg_name=pkg_name, pkg_encoded=pkg_encoded, enable_internet=enable_internet
+        pkg_name=pkg_name,
+        pkg_encoded=pkg_encoded,
+        env_variables=env_variables,
+        enable_internet=enable_internet,
     )
     notebook_obj.setdefault("cells", []).insert(0, bootstrap_cell)
 

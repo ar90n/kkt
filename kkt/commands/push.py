@@ -67,7 +67,7 @@ def kernels_push(api, meta_data, script_body):
     return result
 
 
-def create_kernel_body(meta_data):
+def create_kernel_body(meta_data: Dict, env_variables: Dict):
     enable_internet = meta_data.get("enable_internet", False)
     kernel_type = meta_data.get("kernel_type", "script")
     code_file_path = Path(meta_data.get("code_file", "main.py"))
@@ -75,11 +75,11 @@ def create_kernel_body(meta_data):
         code_file_path = Path.cwd() / code_file_path
 
     kernel_builder = get_builder(kernel_type, enable_internet)
-    return kernel_builder(code_file_path)
+    return kernel_builder(code_file_path, env_variables)
 
 
-def push_impl(meta_data):
-    kernel_body = create_kernel_body(meta_data)
+def push_impl(meta_data: Dict, env_variables: Dict):
+    kernel_body = create_kernel_body(meta_data, env_variables)
     return kernels_push(api, meta_data, kernel_body)
 
 
@@ -92,9 +92,13 @@ def dump_push_result(result: KernelPushResponse) -> None:
         print("version: {}".format(result.versionNumber))
 
 
-def merge_cli_args(meta_data: Dict, cli_args: Dict) -> Dict:
+def merge_cli_args(meta_data, cli_args: Dict) -> Dict:
     valid_args = {k: v for k, v in cli_args.items() if v is not None}
     return {**(meta_data.value), **valid_args}
+
+
+def override_env_variables(environment_variables: Dict) -> Dict:
+    return {k: os.environ.get(k, v) for k, v in environment_variables.items()}
 
 
 @click.command()
@@ -108,13 +112,15 @@ def push(**kwargs):
     kkt = parser.read()
     meta_data = merge_cli_args(kkt.get("meta_data"), kwargs)
 
+    env_variables = override_env_variables(kkt.get("environment_variables", {}))
+
     repo = Repo(Path.cwd())
     enable_git_tag = kkt.get("enable_git_tag")
     if enable_git_tag:
         repo.validate()
 
-    result = push_impl(meta_data)
+    result = push_impl(meta_data, env_variables)
     dump_push_result(result)
 
     if enable_git_tag and result.versionNumber:
-        repo.attach_version_tag(result.versionNumber, meta_data)
+        repo.attach_version_tag(result.versionNumber, meta_data, env_variables)

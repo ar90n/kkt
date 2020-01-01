@@ -13,9 +13,10 @@ def _create_tag(version: int) -> str:
     return "kernel_version_{}".format(version)
 
 
-def _create_message(meta_data: Dict) -> str:
+def _create_message(meta_data: Dict, env_variables: Dict) -> str:
     meta_data_dump = dumps_as_toml(meta_data)
-    return f"[tool.kkt.meta_data]\n{meta_data_dump}"
+    env_variables_dump = dumps_as_toml(env_variables)
+    return f"[tool.kkt.meta_data]\n{meta_data_dump}\n\n[tool.kkt.environment_variables]\n{env_variables_dump}"
 
 
 class Repo:
@@ -37,7 +38,7 @@ class Repo:
     def validate(self):
         self._check_uncommited_files()
 
-    def attach_version_tag(self, version: int, meta_data: Dict) -> None:
+    def attach_version_tag(self, version: int, meta_data: Dict, env_variables: Dict) -> None:
         tag = _create_tag(version)
-        message = _create_message(meta_data)
+        message = _create_message(meta_data, env_variables)
         self.git_repo.create_tag(tag, message=message)
