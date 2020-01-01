@@ -38,7 +38,9 @@ class Repo:
     def validate(self):
         self._check_uncommited_files()
 
-    def attach_version_tag(self, version: int, meta_data: Dict, env_variables: Dict) -> None:
+    def attach_version_tag(
+        self, version: int, meta_data: Dict, env_variables: Dict
+    ) -> None:
         tag = _create_tag(version)
         message = _create_message(meta_data, env_variables)
         self.git_repo.create_tag(tag, message=message)

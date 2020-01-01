@@ -24,4 +24,9 @@ def status():
     user_name = api.config_values[api.CONFIG_NAME_USER]
     slug = meta_data.get("slug")
     result = api.kernel_status(user_name, slug)
-    print(result)
+
+    message_elms = [f"status: {result['status']}"]
+    if result["failureMessage"]:
+        message_elms.append(f"message: {result['failureMessage']}")
+    message = "\n".join(message_elms)
+    click.echo(message)
