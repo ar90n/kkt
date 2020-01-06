@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 from typing import Dict
 
@@ -97,8 +98,14 @@ def merge_cli_args(meta_data, cli_args: Dict) -> Dict:
     return {**(meta_data.value), **valid_args}
 
 
-def override_env_variables(environment_variables: Dict) -> Dict:
-    return {k: os.environ.get(k, v) for k, v in environment_variables.items()}
+def get_env_variables(env_variables: Dict) -> Dict:
+    result = {**env_variables}
+    for k, v in os.environ.items():
+        m = re.match(r'^KKT_(.+)$', k)
+        if m:
+            update_key = m.groups()[0]
+            result[update_key] = v
+    return result
 
 
 @click.command()
@@ -112,7 +119,7 @@ def push(**kwargs):
     kkt = parser.read()
     meta_data = merge_cli_args(kkt.get("meta_data"), kwargs)
 
-    env_variables = override_env_variables(kkt.get("environment_variables", {}))
+    env_variables = get_env_variables(kkt.get("environment_variables", {}))
 
     repo = Repo(Path.cwd())
     enable_git_tag = kkt.get("enable_git_tag")
