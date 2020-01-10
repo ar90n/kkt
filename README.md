@@ -19,10 +19,10 @@ $ poetry add kkt --dev
 ## Usage
 
 ### Set username and token of kaggle-api
-Please setup your kaggle-api credentials as following this (article)[https://github.com/Kaggle/kaggle-api#api-credentials]
+Please setup your kaggle-api credentials as following this [article](https://github.com/Kaggle/kaggle-api#api-credentials)
 
 ### Setup kkt in your project
-Setup this project for (digit-recognizer competition)[https://www.kaggle.com/c/digit-recognizer].
+Setup this project for [digit-recognizer competition](https://www.kaggle.com/c/digit-recognizer).
 In this configuration, we use script.py. If you want to use notebook, kkt also support it.
 
 ```
