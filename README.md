@@ -104,6 +104,7 @@ ref: /ar90ngas/kkt-example
 url: https://www.kaggle.com/ar90ngas/kkt-example
 version: 1
 ```
+Please visit (the result)[https://www.kaggle.com/ar90ngas/kkt-example].
 
 ### Show the status
 ```
