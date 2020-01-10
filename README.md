@@ -53,10 +53,10 @@ $ tree
 └── script.py
 
 1 directory, 4 files
-'''
+```
 
 __init__.py
-'''python
+```python
 from pathlib import Path
 import random
 
@@ -68,7 +68,7 @@ def choice():
 def load_sample_submission():
     path = Path("..") / "input" / "digit-recognizer" / "sample_submission.csv"
     return pd.read_csv(path,  index_col="ImageId")
-'''
+```
 
 script.py
 ```python
