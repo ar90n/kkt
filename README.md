@@ -53,8 +53,10 @@ $ tree
 └── script.py
 
 1 directory, 4 files
+'''
 
-$ cat kkt_example/__init__.py
+__init__.py
+'''python
 from pathlib import Path
 import random
 
@@ -66,7 +68,10 @@ def choice():
 def load_sample_submission():
     path = Path("..") / "input" / "digit-recognizer" / "sample_submission.csv"
     return pd.read_csv(path,  index_col="ImageId")
-$ cat script.py
+'''
+
+script.py
+```python
 import kkt_example
 
 submission = kkt_example.load_sample_submission()
