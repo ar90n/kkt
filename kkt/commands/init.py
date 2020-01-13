@@ -62,7 +62,7 @@ def init():
         "kernel_type",
         default=DEFAULT_KKT_CONFIG["meta_data"]["kernel_type"],
         type=KernelType,
-    ).name
+    )
     meta_data["is_private"] = click.confirm(
         "is_private", default=DEFAULT_KKT_CONFIG["meta_data"]["is_private"]
     )
@@ -73,7 +73,7 @@ def init():
         "enable_internet", default=DEFAULT_KKT_CONFIG["meta_data"]["enable_internet"]
     )
     meta_data["dataset_sources"] = dataset_prompt()
-    meta_data["competition_sources"] = [kkt_config["meta_data"]["competition"]]
+    meta_data["competition_sources"] = [meta_data["competition"]]
 
     kkt_config = {
         "meta_data": meta_data,
