@@ -37,20 +37,12 @@ def dataset_prompt():
         dataset_sources.append(dataset_source)
     return dataset_sources
 
-
-@click.command()
-def init():
-    pyproject_path = Path.cwd() / "pyproject.toml"
-    parser = KktParser(pyproject_path)
-
-    try:
-        kkt = parser.read()
+def init_impl(api, kkt):
+    if kkt is None:
         if not click.confirm(
             "Kkt section is found in pyproject.yml. Do you want to continue?"
         ):
             return
-    except KktSectionNotFound:
-        pass
 
     click.echo("Appending Kkt section into your pyproject.toml config.")
 
@@ -82,3 +74,19 @@ def init():
         "enable_git_tag", default=DEFAULT_KKT_CONFIG["enable_git_tag"]
     )
     parser.write(kkt_config)
+
+
+@click.command()
+def init():
+    pyproject_path = Path.cwd() / "pyproject.toml"
+    parser = KktParser(pyproject_path)
+
+    try:
+        kkt = parser.read()
+    except KktSectionNotFound:
+        kkt = None
+
+    api = KaggleApi(ApiClient())
+    api.authenticate()
+
+    init_impl(api, kkt)

@@ -14,9 +14,6 @@ from ..builders import get_builder
 from ..repo import Repo
 from ..utils.parser import KktParser
 
-api = KaggleApi(ApiClient())
-api.authenticate()
-
 
 def kernels_push(api, meta_data, script_body):
     """ read the metadata file and kernel files from a notebook, validate
@@ -79,7 +76,7 @@ def create_kernel_body(meta_data: Dict, env_variables: Dict):
     return kernel_builder(code_file_path, env_variables)
 
 
-def push_impl(meta_data: Dict, env_variables: Dict):
+def push_impl(api, meta_data: Dict, env_variables: Dict):
     kernel_body = create_kernel_body(meta_data, env_variables)
     return kernels_push(api, meta_data, kernel_body)
 
@@ -126,7 +123,10 @@ def push(**kwargs):
     if enable_git_tag:
         repo.validate()
 
-    result = push_impl(meta_data, env_variables)
+    api = KaggleApi(ApiClient())
+    api.authenticate()
+
+    result = push_impl(api, meta_data, env_variables)
     dump_push_result(result)
 
     if enable_git_tag and result.versionNumber:

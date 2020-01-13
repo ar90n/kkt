@@ -10,17 +10,8 @@ from kaggle.models.kernel_push_request import KernelPushRequest
 
 import click
 
-api = KaggleApi(ApiClient())
-api.authenticate()
 
-
-@click.command()
-def status():
-    pyproject_path = Path.cwd() / "pyproject.toml"
-    parser = KktParser(pyproject_path)
-    kkt = parser.read()
-    meta_data = kkt.get("meta_data")
-
+def status_impl(api, meta_data):
     user_name = api.config_values[api.CONFIG_NAME_USER]
     slug = meta_data.get("slug")
     result = api.kernel_status(user_name, slug)
@@ -30,3 +21,16 @@ def status():
         message_elms.append(f"message: {result['failureMessage']}")
     message = "\n".join(message_elms)
     click.echo(message)
+
+
+@click.command()
+def status():
+    pyproject_path = Path.cwd() / "pyproject.toml"
+    parser = KktParser(pyproject_path)
+    kkt = parser.read()
+    meta_data = kkt.get("meta_data")
+
+    api = KaggleApi(ApiClient())
+    api.authenticate()
+
+    status_impl(api, meta_data)
