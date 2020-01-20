@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Union, Dict, List
+from typing import Union, Dict, List, Any, Iterable
 
 from tomlkit.toml_file import TOMLFile
 
@@ -8,7 +8,7 @@ from .dict import merge
 
 MANDATORY_KEYS: List = [("meta_data", [("slug", []), ("code_file", [])])]
 
-DEFAULT_KKT_CONFIG = {
+DEFAULT_KKT_CONFIG: Dict = {
     "meta_data": {
         "kernel_type": "script",
         "is_private": True,
@@ -23,7 +23,7 @@ DEFAULT_KKT_CONFIG = {
 }
 
 
-def _validate_keys(obj, keys, path="") -> None:
+def _validate_keys(obj: Dict[str, Any], keys: List, path: str = "") -> None:
     for cur, children in keys:
         path = "{}.{}".format(path, cur)
         if cur not in obj:
@@ -46,7 +46,7 @@ class KktParser(PyprojectParser):
     def __init__(self, path: Union[str, Path]) -> None:
         super().__init__(path)
 
-    def read(self):
+    def read(self) -> Dict[str, Any]:
         pyproj = super().read()
         try:
             kkt = pyproj["tool"]["kkt"]
@@ -57,7 +57,7 @@ class KktParser(PyprojectParser):
 
         return kkt
 
-    def write(self, kkt_config):
+    def write(self, kkt_config: Dict[str, Any]) -> None:
         pyproj = super().read()
         pyproj["tool"]["kkt"] = kkt_config
 

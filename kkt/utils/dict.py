@@ -1,4 +1,7 @@
-def merge(source, destination):
+from typing import Dict
+
+
+def merge(source: Dict, destination: Dict) -> Dict:
     """
     Reference: https://stackoverflow.com/questions/20656135/python-deep-merge-dictionary-data
     """
@@ -11,4 +14,4 @@ def merge(source, destination):
             if key not in destination:
                 destination[key] = value
 
-        return destination
+    return destination

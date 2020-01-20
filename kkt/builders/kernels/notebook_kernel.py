@@ -4,7 +4,7 @@ import json
 from .bootstrap import create_bootstrap_code
 
 
-def erace_all_outputs(notebook: dict):
+def erace_all_outputs(notebook: Dict) -> Dict:
     notebook = {**notebook}
     for cell in notebook.get("cells", []):
         if "outputs" in cell and cell["cell_type"] == "code":
@@ -14,7 +14,7 @@ def erace_all_outputs(notebook: dict):
 
 def create_bootstrap_cell(
     pkg_name: str, pkg_encoded: str, env_variables: Dict, enable_internet: bool = False
-):
+) -> Dict:
     bootstrap_code = create_bootstrap_code(
         pkg_name=pkg_name,
         pkg_encoded=pkg_encoded,
@@ -36,7 +36,7 @@ def create_notebook_kernel(
     pkg_encoded: str,
     env_variables: Dict,
     enable_internet: bool = False,
-):
+) -> str:
     notebook_obj = erace_all_outputs(json.loads(notebook_body))
 
     bootstrap_cell = create_bootstrap_cell(

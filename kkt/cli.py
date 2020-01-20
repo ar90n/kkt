@@ -10,5 +10,5 @@ cmd.add_command(push)
 cmd.add_command(status)
 
 
-def main():
+def main() -> None:
     cmd()

@@ -1,18 +1,19 @@
+from typing import Dict, Optional
 from pathlib import Path
+from .kkt_command import kkt_command
 from ..utils.parser import KktParser, DEFAULT_KKT_CONFIG
-from ..exception import KktSectionNotFound
+from ..exception import MetaDataNotFound
 from enum import Enum
 
-from kaggle import KaggleApi
-from kaggle.api_client import ApiClient
 from kaggle.models.kaggle_models_extended import KernelPushResponse
 from kaggle.models.kernel_push_request import KernelPushRequest
+from kaggle import KaggleApi
 
 import click
 
 
-def status_impl(api, meta_data):
-    user_name = api.config_values[api.CONFIG_NAME_USER]
+def status_impl(api: KaggleApi, meta_data: Dict) -> str:
+    user_name = api.config_valueear[api.CONFIG_NAME_USER]
     slug = meta_data.get("slug")
     result = api.kernel_status(user_name, slug)
 
@@ -20,17 +21,15 @@ def status_impl(api, meta_data):
     if result["failureMessage"]:
         message_elms.append(f"message: {result['failureMessage']}")
     message = "\n".join(message_elms)
-    click.echo(message)
+    return message
 
 
 @click.command()
-def status():
-    pyproject_path = Path.cwd() / "pyproject.toml"
-    parser = KktParser(pyproject_path)
-    kkt = parser.read()
-    meta_data = kkt.get("meta_data")
+@kkt_command()
+def status(api: KaggleApi, kkt: Dict, **kwargs: Dict) -> None:
+    if "meta_data" not in kkt:
+        raise MetaDataNotFound()
+    meta_data = kkt["meta_data"].value
 
-    api = KaggleApi(ApiClient())
-    api.authenticate()
-
-    status_impl(api, meta_data)
+    message = status_impl(api, meta_data)
+    click.echo(message)

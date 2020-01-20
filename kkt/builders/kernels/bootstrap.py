@@ -23,7 +23,7 @@ __bootstrap__()"""
 
 def create_bootstrap_code(
     pkg_name: str, pkg_encoded: str, env_variables: Dict, enable_internet: bool = False
-):
+) -> str:
     install_options = "" if enable_internet else "--no-deps"
     return BOOTSTRAP_TEMPLATE.format(
         pkg_encoded=pkg_encoded,

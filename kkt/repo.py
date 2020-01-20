@@ -24,7 +24,7 @@ class Repo:
         self.path = path
 
     @property
-    def git_repo(self):
+    def git_repo(self) -> GitRepo:
         return GitRepo(self.path)
 
     def _check_uncommited_files(self) -> None:
@@ -35,7 +35,7 @@ class Repo:
         if 0 < len(uncommitted_files):
             raise FoundUncommitedFiles(uncommitted_files)
 
-    def validate(self):
+    def validate(self) -> None:
         self._check_uncommited_files()
 
     def attach_version_tag(

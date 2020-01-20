@@ -8,3 +8,7 @@ class AlreadyPushed(EnvironmentError):
 
 class KktSectionNotFound(EnvironmentError):
     pass
+
+
+class MetaDataNotFound(EnvironmentError):
+    pass

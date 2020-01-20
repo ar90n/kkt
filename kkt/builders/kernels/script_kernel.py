@@ -15,7 +15,7 @@ def create_script_kernel(
     pkg_encoded: str,
     env_variables: Dict,
     enable_internet: bool = False,
-):
+) -> str:
     bootstrap_code = create_bootstrap_code(
         pkg_name=pkg_name,
         pkg_encoded=pkg_encoded,

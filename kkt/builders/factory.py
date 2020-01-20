@@ -1,11 +1,13 @@
-from typing import Dict
+from typing import Dict, Callable
 from pathlib import Path
 
 from .kernels import KERNEL_CREATEORS
 from .packaging import poetry_packaging
 
+Builder = Callable[[Path, Dict], str]
 
-def get_builder(kernel_type: str, enable_internet: bool = False):
+
+def get_builder(kernel_type: str, enable_internet: bool = False) -> Builder:
     if kernel_type not in KERNEL_CREATEORS:
         raise ValueError(
             "kernel_type mus be in [{}]: {}".format(

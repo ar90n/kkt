@@ -10,12 +10,15 @@ from kaggle.models.kaggle_models_extended import KernelPushResponse
 from kaggle.models.kernel_push_request import KernelPushRequest
 from slugify import slugify
 
+from .kkt_command import kkt_command
 from ..builders import get_builder
 from ..repo import Repo
-from ..utils.parser import KktParser
+from ..exception import MetaDataNotFound
 
 
-def kernels_push(api, meta_data, script_body):
+def kernels_push(
+    api: KaggleApi, meta_data: Dict, script_body: str
+) -> KernelPushResponse:
     """ read the metadata file and kernel files from a notebook, validate
         both, and use Kernel API to push to Kaggle if all is valid.
          Parameters
@@ -65,7 +68,7 @@ def kernels_push(api, meta_data, script_body):
     return result
 
 
-def create_kernel_body(meta_data: Dict, env_variables: Dict):
+def create_kernel_body(meta_data: Dict, env_variables: Dict) -> str:
     enable_internet = meta_data.get("enable_internet", False)
     kernel_type = meta_data.get("kernel_type", "script")
     code_file_path = Path(meta_data.get("code_file", "main.py"))
@@ -76,7 +79,9 @@ def create_kernel_body(meta_data: Dict, env_variables: Dict):
     return kernel_builder(code_file_path, env_variables)
 
 
-def push_impl(api, meta_data: Dict, env_variables: Dict):
+def push_impl(
+    api: KaggleApi, meta_data: Dict, env_variables: Dict
+) -> KernelPushResponse:
     kernel_body = create_kernel_body(meta_data, env_variables)
     return kernels_push(api, meta_data, kernel_body)
 
@@ -90,15 +95,15 @@ def dump_push_result(result: KernelPushResponse) -> None:
         print("version: {}".format(result.versionNumber))
 
 
-def merge_cli_args(meta_data, cli_args: Dict) -> Dict:
+def merge_cli_args(meta_data: Dict, cli_args: Dict) -> Dict:
     valid_args = {k: v for k, v in cli_args.items() if v is not None}
-    return {**(meta_data.value), **valid_args}
+    return {**meta_data, **valid_args}
 
 
 def get_env_variables(env_variables: Dict) -> Dict:
     result = {**env_variables}
     for k, v in os.environ.items():
-        m = re.match(r'^KKT_(.+)$', k)
+        m = re.match(r"^KKT_(.+)$", k)
         if m:
             update_key = m.groups()[0]
             result[update_key] = v
@@ -110,21 +115,19 @@ def get_env_variables(env_variables: Dict) -> Dict:
 @click.option("--enable-gpu", type=bool)
 @click.option("--enable-internet", type=bool)
 @click.option("--is-private", type=bool)
-def push(**kwargs):
-    pyproject_path = Path.cwd() / "pyproject.toml"
-    parser = KktParser(pyproject_path)
-    kkt = parser.read()
-    meta_data = merge_cli_args(kkt.get("meta_data"), kwargs)
-
-    env_variables = get_env_variables(kkt.get("environment_variables", {}))
-
-    repo = Repo(Path.cwd())
-    enable_git_tag = kkt.get("enable_git_tag")
+@kkt_command()
+def push(api: KaggleApi, kkt: Dict, pyproject_path: Path, **kwargs: Dict) -> None:
+    repo = Repo(pyproject_path.parent)
+    enable_git_tag: bool = kkt.get("enable_git_tag", False)
     if enable_git_tag:
         repo.validate()
 
-    api = KaggleApi(ApiClient())
-    api.authenticate()
+    if "meta_data" not in kkt:
+        raise MetaDataNotFound()
+    meta_data = kkt["meta_data"].value
+
+    meta_data = merge_cli_args(meta_data, kwargs)
+    env_variables = get_env_variables(kkt.get("environment_variables", {}))
 
     result = push_impl(api, meta_data, env_variables)
     dump_push_result(result)
