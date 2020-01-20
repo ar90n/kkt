@@ -13,6 +13,7 @@ from ..utils.exception import KktSectionNotFound
 
 Wrapper = Callable[[Callable], Callable]
 
+
 def kkt_command(init: bool = False, cwd: Path = Path.cwd()) -> Wrapper:
     def _wrapper(command: Callable) -> Callable:
         @wraps(command)
