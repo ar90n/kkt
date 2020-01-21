@@ -12,6 +12,8 @@ repos:
     rev: ''  # Use the sha / tag you want to point at
     hooks:
     -   id: mypy
+        args:
+        - --ignore-missing-imports
 -   repo: https://github.com/psf/black
     rev: 19.10b0
     hooks:
