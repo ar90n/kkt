@@ -20,6 +20,7 @@ def poetry_packaging() -> Tuple[str, str]:
         temp_dir = Path(temp_dir_str)
         wheel_pkg_name = WheelBuilder.make_in(poetry, env, io, temp_dir)
         pkg_path = temp_dir / wheel_pkg_name
-        pkg_encoded = encode(pkg_path)
+        with pkg_path.open() as io:
+            pkg_encoded = encode(io)
 
     return wheel_pkg_name, pkg_encoded
