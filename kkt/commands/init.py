@@ -1,7 +1,7 @@
 from typing import Dict, List, Any
 from pathlib import Path
 from .kkt_command import kkt_command
-from ..utils.parser import KktParser, DEFAULT_KKT_CONFIG
+from ..parser import KktParser, DEFAULT_KKT_CONFIG
 from ..exception import KktSectionNotFound
 from enum import Enum
 

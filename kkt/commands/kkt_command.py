@@ -9,7 +9,7 @@ from kaggle.api_client import ApiClient
 import click
 from poetry.factory import Factory
 from ..parser import KktParser
-from ..utils.exception import KktSectionNotFound
+from ..exception import KktSectionNotFound
 
 Wrapper = Callable[[Callable], Callable]
 

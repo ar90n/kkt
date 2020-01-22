@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 from pathlib import Path
 from .kkt_command import kkt_command
-from ..utils.parser import KktParser, DEFAULT_KKT_CONFIG
+from ..parser import KktParser, DEFAULT_KKT_CONFIG
 from ..exception import MetaDataNotFound
 from enum import Enum
 
