@@ -3,8 +3,8 @@ from typing import Union, Dict, List, Any, Iterable
 
 from tomlkit.toml_file import TOMLFile
 
-from ..exception import KktSectionNotFound
-from .dict import merge
+from .exception import KktSectionNotFound
+from .utils.dict import merge
 
 MANDATORY_KEYS: List = [("meta_data", [("slug", []), ("code_file", [])])]
 
