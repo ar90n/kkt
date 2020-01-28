@@ -1,0 +1,3 @@
+[tool.kkt.meta_data]
+slug = "mandatory"
+code_file = "mandatory.py"

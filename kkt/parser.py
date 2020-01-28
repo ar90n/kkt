@@ -3,7 +3,7 @@ from typing import Union, Dict, List, Any, Iterable
 
 from tomlkit.toml_file import TOMLFile
 
-from .exception import KktSectionNotFound
+from .exception import KktSectionNotFound, MandatoryKeyNotFound
 from .utils.dict import merge
 
 MANDATORY_KEYS: List = [("meta_data", [("slug", []), ("code_file", [])])]
@@ -27,7 +27,7 @@ def _validate_keys(obj: Dict[str, Any], keys: List, path: str = "") -> None:
     for cur, children in keys:
         path = "{}.{}".format(path, cur)
         if cur not in obj:
-            raise ValueError(path)
+            raise MandatoryKeyNotFound(path)
         _validate_keys(obj[cur], children, path=path)
 
 

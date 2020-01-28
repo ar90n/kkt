@@ -76,7 +76,8 @@ def create_kernel_body(meta_data: Dict, env_variables: Dict) -> str:
         code_file_path = Path.cwd() / code_file_path
 
     kernel_builder = get_builder(kernel_type, enable_internet)
-    return kernel_builder(code_file_path, env_variables)
+    with code_file_path.open() as fp:
+        return kernel_builder(fp, env_variables)
 
 
 def push_impl(
