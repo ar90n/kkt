@@ -16,6 +16,10 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Setu git
+      run: |
+        git config --global user.email "kkt@kkt.kkt"
+        git config --global user.name "kkt"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
