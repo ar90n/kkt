@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 from functools import wraps
-from typing import Callable, List, Dict
+from typing import Callable, List, Dict, Optional
 
 from kaggle import KaggleApi
 from kaggle.api_client import ApiClient
@@ -14,11 +14,13 @@ from ..exception import KktSectionNotFound
 Wrapper = Callable[[Callable], Callable]
 
 
-def kkt_command(init: bool = False, cwd: Path = Path.cwd()) -> Wrapper:
+def kkt_command(init: bool = False, cwd: Optional[Path] = None) -> Wrapper:
     def _wrapper(command: Callable) -> Callable:
         @wraps(command)
         def _f(*args: List, **kwargs: Dict) -> None:
-            pyproject_path = Factory.locate(cwd)
+            prj_wd = Path.cwd() if cwd is None else cwd
+            pyproject_path = Factory.locate(prj_wd)
+
             parser = KktParser(pyproject_path)
 
             try:

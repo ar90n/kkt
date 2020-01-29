@@ -12,3 +12,19 @@ python = "^3.6"
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
+
+[tool.kkt.meta_data]
+slug = "normal"
+competition = "normal"
+code_file = "notebook.ipynb"
+kernel_type = "notebook"
+is_private = false
+enable_gpu = true
+enable_internet = true
+dataset_sources = ["normal_data"]
+kernel_data_sources = ["normal"]
+competition_sources = ["normal"]
+keywords = ["normal"]
+
+[tool.kkt]
+enable_git_tag = true

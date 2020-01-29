@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import List, Dict, Optional
 from pathlib import Path
 from .kkt_command import kkt_command
 from ..parser import KktParser, DEFAULT_KKT_CONFIG
@@ -13,7 +13,7 @@ import click
 
 
 def status_impl(api: KaggleApi, meta_data: Dict) -> str:
-    user_name = api.config_valueear[api.CONFIG_NAME_USER]
+    user_name = api.config_values[api.CONFIG_NAME_USER]
     slug = meta_data.get("slug")
     result = api.kernel_status(user_name, slug)
 
@@ -26,7 +26,7 @@ def status_impl(api: KaggleApi, meta_data: Dict) -> str:
 
 @click.command()
 @kkt_command()
-def status(api: KaggleApi, kkt: Dict, **kwargs: Dict) -> None:
+def status(api: KaggleApi, kkt: Dict, *args: List, **kwargs: Dict) -> None:
     if "meta_data" not in kkt:
         raise MetaDataNotFound()
     meta_data = kkt["meta_data"].value
