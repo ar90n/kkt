@@ -28,6 +28,7 @@ def kaggle_api():
         api_mock.kernel_status = MagicMock(
             return_value={"status": status, "failureMessage": failureMessage}
         )
+        api_mock.competitions_list = MagicMock(return_value=["comp"])
         return api_mock
 
     yield _f
