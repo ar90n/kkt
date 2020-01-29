@@ -1,6 +1,10 @@
 # kkt
 kkt is a tool for kaggle kernel management.
 
+[![Actions Status](https://github.com/ar90n/kkt/workflows/Python%20package/badge.svg)](https://github.com/ar90n/kkt/actions)
+[![PyPI](https://img.shields.io/pypi/v/kkt.svg)](https://pypi.python.org/pypi/kkt)
+[![PythonVersions](https://img.shields.io/pypi/pyversions/kkt.svg)](https://pypi.python.org/pypi/kkt)
+
 ## Feature
 * Show the status of the latest version
 * Push your script or notebook to the Kaggle Kernels
