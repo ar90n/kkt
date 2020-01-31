@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Union, Dict, List, Any, Iterable
 
 from tomlkit.toml_file import TOMLFile
+from tomlkit import table
 
 from .exception import KktSectionNotFound, MandatoryKeyNotFound
 from .utils.dict import merge

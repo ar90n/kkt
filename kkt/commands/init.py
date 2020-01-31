@@ -16,6 +16,9 @@ class KernelType(Enum):
     script = "script"
     notebook = "notebook"
 
+    def __str__(self):
+        return self.value
+
 
 def competition_prompt(api: KaggleApi) -> str:
     competition_query = click.prompt("competition", default="", show_default=False)
@@ -41,10 +44,12 @@ def init_impl(api: KaggleApi) -> Dict:
     meta_data["competition"] = competition_prompt(api)
     meta_data["slug"] = click.prompt("slug", type=str)
     meta_data["code_file"] = click.prompt("code_file", default="script.py")
-    meta_data["kernel_type"] = click.prompt(
-        "kernel_type",
-        default=DEFAULT_KKT_CONFIG["meta_data"]["kernel_type"],
-        type=KernelType,
+    meta_data["kernel_type"] = str(
+        click.prompt(
+            "kernel_type",
+            default=DEFAULT_KKT_CONFIG["meta_data"]["kernel_type"],
+            type=KernelType,
+        )
     )
     meta_data["is_private"] = click.confirm(
         "is_private", default=DEFAULT_KKT_CONFIG["meta_data"]["is_private"]
@@ -76,7 +81,7 @@ def confirm_initialize() -> bool:
 @click.command()
 @kkt_command(init=True)
 def init(api: KaggleApi, kkt: Dict, pyproject_path: Path) -> None:
-    if kkt is None and not confirm_initialize():
+    if kkt is not None and not confirm_initialize():
         return
     click.echo("Appending Kkt section into your pyproject.toml config.")
 

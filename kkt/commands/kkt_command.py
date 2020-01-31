@@ -1,7 +1,8 @@
 import sys
 from pathlib import Path
 from functools import wraps
-from typing import Callable, List, Dict, Optional
+from typing import Callable, List, Dict, Optional, Any
+from contextlib import contextmanager
 
 from kaggle import KaggleApi
 from kaggle.api_client import ApiClient
@@ -12,6 +13,10 @@ from ..parser import KktParser
 from ..exception import KktSectionNotFound
 
 Wrapper = Callable[[Callable], Callable]
+
+
+def get_kaggle_api() -> Any:
+    return KaggleApi(ApiClient())
 
 
 def kkt_command(init: bool = False, cwd: Optional[Path] = None) -> Wrapper:
@@ -31,7 +36,7 @@ def kkt_command(init: bool = False, cwd: Optional[Path] = None) -> Wrapper:
                     sys.exit(1)
                 kkt = {}
 
-            api = KaggleApi(ApiClient())
+            api = get_kaggle_api()
             api.authenticate()
 
             command(api, kkt, pyproject_path, *args, **kwargs)
