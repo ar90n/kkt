@@ -29,6 +29,7 @@ pytest-chdir = "^0.1.0"
 pytest-annotate = "^1.0.3"
 pytest-click = "^0.3"
 pytest-env = "^0.6.2"
+pytest-virtualenv = "^1.7.0"
 
 [tool.poetry.scripts]
 kkt = 'kkt.cli:main'

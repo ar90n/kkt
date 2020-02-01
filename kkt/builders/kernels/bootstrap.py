@@ -1,3 +1,4 @@
+import json
 from typing import Dict
 
 BOOTSTRAP_TEMPLATE: str = """def __bootstrap__():
@@ -29,6 +30,6 @@ def create_bootstrap_code(
         pkg_encoded=pkg_encoded,
         pkg_name=pkg_name,
         install_options=install_options,
-        env_variables=env_variables,
+        env_variables=json.dumps(env_variables),
         encoding="utf8",
     )

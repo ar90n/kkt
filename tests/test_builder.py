@@ -6,13 +6,24 @@ from kkt.builders import get_builder
 from kkt.exception import NotSupportedKernelType
 
 
-def test_build_script_kernel(chshared_datadir):
+def test_build_script_kernel(virtualenv, chshared_datadir):
     script_kernel_builder = get_builder("script")
 
-    str_io = StringIO("import sys")
-    script = script_kernel_builder(str_io, {})
-    obj = compile(script, "<string>", "exec")
-    assert obj is not None
+    script = """import os
+import kkt_test_shared_data
+print("ABC:", os.environ.get("ABC"))
+print("version:", kkt_test_shared_data.__version__)
+"""
+    script = script_kernel_builder(StringIO(script), {"ABC": "1234"})
+    actual = virtualenv.run(f"python -c '{script}'", capture=True)
+    actual = "\n".join(actual.split("\n")[2:])
+
+    version = "0.1.0"
+    expect = f"""Successfully installed kkt-test-shared-data-{version}
+ABC: 1234
+version: {version}
+"""
+    assert expect == actual
 
 
 def test_build_notebook_kernel(chshared_datadir):
