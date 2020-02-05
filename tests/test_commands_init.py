@@ -56,7 +56,7 @@ def test_commands_init(chdatadir, cli_runner, kaggle_api, monkeypatch):
         ]
     )
 
-    ret = cli_runner.invoke(init, [], input=stdin_value)
+    cli_runner.invoke(init, [], input=stdin_value)
 
     expected_kkt = {
         "meta_data": {

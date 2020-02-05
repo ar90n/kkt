@@ -31,6 +31,7 @@ pytest-click = "^0.3"
 pytest-env = "^0.6.2"
 pytest-virtualenv = "^1.7.0"
 pppiv = "^0.1.1"
+wemake-python-styleguide = "^0.13.4"
 
 [tool.poetry.scripts]
 kkt = 'kkt.cli:main'
