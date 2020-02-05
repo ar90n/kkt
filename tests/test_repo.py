@@ -3,17 +3,15 @@ from pathlib import Path
 
 from kkt.repo import Repo
 from kkt.exception import FoundUncommitedFiles
-
-
-def rename_dot_git(root: Path) -> None:
-    dot_git_path = root / "dot_git"
-    Path(dot_git_path).rename(".git")
+from .conftest import rename_dot_git
 
 
 def test_repo(chdatadir):
     rename_dot_git(chdatadir)
 
     repo = Repo(chdatadir)
+    repo = Repo(chdatadir)
+    assert repo.git_repo is not None
     assert repo.git_repo is not None
 
     repo.validate()

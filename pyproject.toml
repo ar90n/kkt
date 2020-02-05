@@ -30,6 +30,7 @@ pytest-annotate = "^1.0.3"
 pytest-click = "^0.3"
 pytest-env = "^0.6.2"
 pytest-virtualenv = "^1.7.0"
+pppiv = "^0.1.1"
 
 [tool.poetry.scripts]
 kkt = 'kkt.cli:main'
