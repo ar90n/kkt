@@ -32,6 +32,10 @@ pytest-env = "^0.6.2"
 pytest-virtualenv = "^1.7.0"
 pppiv = "^0.1.1"
 wemake-python-styleguide = "^0.13.4"
+pycallgraph = "^1.0.1"
+radon = "^4.1.0"
+pytest-picked = "^0.4.1"
+pytest-xdist = "^1.31.0"
 
 [tool.poetry.scripts]
 kkt = 'kkt.cli:main'
