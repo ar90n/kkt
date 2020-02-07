@@ -8,7 +8,7 @@ from kkt.exception import KktSectionNotFound, MandatoryKeyNotFound
     "given, expected",
     [
         (
-            {"name": "normal.toml"},
+            {"name": "normal.toml", "key": "."},
             {
                 "meta_data": {
                     "slug": "normal",
@@ -27,7 +27,7 @@ from kkt.exception import KktSectionNotFound, MandatoryKeyNotFound
             },
         ),
         (
-            {"name": "mandatory.toml"},
+            {"name": "mandatory.toml", "key": "."},
             {
                 "meta_data": {
                     "slug": "mandatory",
@@ -44,6 +44,64 @@ from kkt.exception import KktSectionNotFound, MandatoryKeyNotFound
                 "enable_git_tag": False,
             },
         ),
+        (
+            {"name": "multi_target.toml", "key": ".first"},
+            {
+                "meta_data": {
+                    "slug": "multi_data_first",
+                    "code_file": "notebook.ipynb",
+                    "kernel_type": "notebook",
+                    "competition": "multi_data",
+                    "is_private": False,
+                    "enable_gpu": True,
+                    "enable_internet": True,
+                    "dataset_sources": ["multi_data_data"],
+                    "kernel_data_sources": ["multi_data"],
+                    "competition_sources": ["multi_data"],
+                    "keywords": ["multi_data"],
+                },
+                "enable_git_tag": False,
+            },
+        ),
+        (
+            {"name": "multi_target.toml", "key": ".second"},
+            {
+                "meta_data": {
+                    "slug": "multi_data_second",
+                    "code_file": "script.py",
+                    "kernel_type": "script",
+                    "competition": "multi_data",
+                    "is_private": False,
+                    "enable_gpu": False,
+                    "enable_internet": True,
+                    "dataset_sources": ["multi_data_data"],
+                    "kernel_data_sources": ["multi_data"],
+                    "competition_sources": ["multi_data"],
+                    "keywords": ["multi_data"],
+                },
+                "enable_git_tag": False,
+            },
+        ),
+        (
+            {"name": "multi_target.toml", "key": ".first.third"},
+            {
+                "meta_data": {
+                    "slug": "multi_data_first.third",
+                    "code_file": "notebook.ipynb",
+                    "kernel_type": "notebook",
+                    "competition": "multi_data",
+                    "is_private": False,
+                    "enable_gpu": True,
+                    "enable_gpu": True,
+                    "enable_internet": True,
+                    "dataset_sources": ["multi_data_data"],
+                    "kernel_data_sources": ["multi_data"],
+                    "competition_sources": ["multi_data"],
+                    "keywords": ["multi_data"],
+                },
+                "enable_git_tag": False,
+            },
+        ),
     ],
 )
 def test_kkt_parser_read(given, expected, chdatadir):
@@ -51,7 +109,7 @@ def test_kkt_parser_read(given, expected, chdatadir):
     parser = KktParser(path)
     assert parser.path == path
 
-    kkt = parser.read()
+    kkt = parser.read(key=given["key"])
     assert kkt == expected
 
 

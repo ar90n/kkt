@@ -1,0 +1,23 @@
+[tool.kkt.meta_data]
+competition = "multi_data"
+is_private = false
+enable_internet = true
+dataset_sources = ["multi_data_data"]
+kernel_data_sources = ["multi_data"]
+competition_sources = ["multi_data"]
+keywords = ["multi_data"]
+
+  [tool.kkt.meta_data.first]
+  enable_gpu = true
+  slug = "multi_data_first"
+  code_file = "notebook.ipynb"
+  kernel_type = "notebook"
+
+    [tool.kkt.meta_data.first.third]
+    slug = "multi_data_first.third"
+
+  [tool.kkt.meta_data.second]
+  enable_gpu = false
+  slug = "multi_data_second"
+  code_file = "script.py"
+  kernel_type = "script"
