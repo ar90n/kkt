@@ -112,10 +112,6 @@ def get_env_variables(env_variables: Dict) -> Dict:
 
 
 @click.command()
-@click.option("--code-file", type=click.Path(exists=True))
-@click.option("--enable-gpu", type=bool)
-@click.option("--enable-internet", type=bool)
-@click.option("--is-private", type=bool)
 @kkt_command()
 def push(api: KaggleApi, kkt: Dict, pyproject_path: Path, **kwargs: Dict) -> None:
     repo = Repo(pyproject_path.parent)
