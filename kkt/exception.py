@@ -20,3 +20,7 @@ class MetaDataNotFound(EnvironmentError):
 
 class NotSupportedKernelType(ValueError):
     pass
+
+
+class InvalidTarget(ValueError):
+    pass

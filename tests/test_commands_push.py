@@ -13,7 +13,12 @@ from .conftest import rename_dot_git
     "given, expected",
     [
         (
-            {"user": "kkt", "slug": "without_git", "environ": {"KKT_ENV002": "ENV002"}},
+            {
+                "user": "kkt",
+                "slug": "without_git",
+                "environ": {"KKT_ENV002": "ENV002"},
+                "target": ".",
+            },
             {
                 "output": "\n".join(
                     [
@@ -38,7 +43,39 @@ from .conftest import rename_dot_git
                 },
                 "environment_variables": {"ENV001": "ENV001", "ENV002": "ENV002"},
             },
-        )
+        ),
+        (
+            {
+                "user": "kkt",
+                "slug": "without_git",
+                "environ": {"KKT_ENV002": "ENV002"},
+                "target": ".nest",
+            },
+            {
+                "output": "\n".join(
+                    [
+                        "ref: /kkt/without_git_nest",
+                        "url: https://www.kaggle.com/kkt/without_git_nest",
+                        "version: 1",
+                        "",
+                    ]
+                ),
+                "meta_data": {
+                    "category_ids": ["without_git"],
+                    "kernel_data_sources": [],
+                    "id": "test",
+                    "competition": "without_git",
+                    "competition_sources": ["without_git_comp"],
+                    "dataset_sources": ["without_git_data"],
+                    "enable_gpu": False,
+                    "enable_internet": True,
+                    "is_private": True,
+                    "kernel_type": "script",
+                    "language": "python",
+                },
+                "environment_variables": {"ENV001": "ENV001", "ENV002": "ENV002"},
+            },
+        ),
     ],
 )
 def test_commands_push(
@@ -51,7 +88,7 @@ def test_commands_push(
     os.chdir(proj_path)
 
     os.environ["KKT_ENV002"] = "ENV002"
-    ret = cli_runner.invoke(push, [])
+    ret = cli_runner.invoke(push, ["--target", given["target"]])
     assert expected["output"] == ret.output
 
     expected_meta_data = expected["meta_data"]

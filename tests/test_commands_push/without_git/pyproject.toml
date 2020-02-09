@@ -26,6 +26,11 @@ kernel_data_sources = ["without_git_kernel"]
 competition_sources = ["without_git_comp"]
 keywords = ["without_git"]
 
+  [tool.kkt.meta_data.nest]
+  slug = "without_git_nest"
+  is_private = true
+  enable_gpu = false
+
 [tool.kkt.environment_variables]
 ENV001 = "ENV001"
 

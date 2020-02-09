@@ -1,7 +1,12 @@
 import pytest
 
 from kkt.parser import KktParser
-from kkt.exception import KktSectionNotFound, MandatoryKeyNotFound
+from kkt.exception import (
+    KktSectionNotFound,
+    MandatoryKeyNotFound,
+    InvalidTarget,
+    MetaDataNotFound,
+)
 
 
 @pytest.mark.parametrize(
@@ -116,8 +121,12 @@ def test_kkt_parser_read(given, expected, chdatadir):
 @pytest.mark.parametrize(
     "given, expected",
     [
-        ({"name": "empty.toml"}, KktSectionNotFound),
-        ({"name": "no_mandatory.toml"}, MandatoryKeyNotFound),
+        ({"name": "empty.toml", "target": "."}, KktSectionNotFound),
+        ({"name": "no_mandatory.toml", "target": "."}, MandatoryKeyNotFound),
+        ({"name": "normal.toml", "target": ""}, InvalidTarget),
+        ({"name": "normal.toml", "target": ".."}, InvalidTarget),
+        ({"name": "normal.toml", "target": ".a."}, InvalidTarget),
+        ({"name": "normal.toml", "target": ".a"}, MetaDataNotFound),
     ],
 )
 def test_kkt_parser_failed(given, expected, chdatadir):
@@ -125,7 +134,7 @@ def test_kkt_parser_failed(given, expected, chdatadir):
     parser = KktParser(path)
 
     with pytest.raises(expected):
-        parser.read()
+        parser.read(key=given["target"])
 
 
 @pytest.mark.parametrize("given", ["normal.toml"])

@@ -1,10 +1,17 @@
+import re
 from pathlib import Path
 from typing import Union, Dict, List, Any, Iterable
 
 from tomlkit.toml_file import TOMLFile
+from tomlkit.exceptions import NonExistentKey
 from tomlkit import table
 
-from .exception import KktSectionNotFound, MandatoryKeyNotFound, MetaDataNotFound
+from .exception import (
+    KktSectionNotFound,
+    MandatoryKeyNotFound,
+    MetaDataNotFound,
+    InvalidTarget,
+)
 from .utils.dict import merge
 
 MANDATORY_KEYS: List = [("meta_data", [("slug", []), ("code_file", [])])]
@@ -56,6 +63,10 @@ def _get_meta_data_keys(key: str) -> List[str]:
     >>> _get_meta_data_keys(".a.b.c")
     ['meta_data', 'a', 'b', 'c']
     """
+
+    if re.match(r"^(\.|(\.[^.]+)+)$", key) is None:
+        raise InvalidTarget(key)
+
     # key == "." means the root of meta_data
     return ["meta_data"] if key == "." else f"meta_data{key}".split(".")
 
@@ -124,7 +135,7 @@ class KktParser(PyprojectParser):
         pyproj = super().read()
         try:
             kkt = pyproj["tool"]["kkt"]
-        except KeyError:
+        except (NonExistentKey, KeyError):
             raise KktSectionNotFound()
 
         kkt["meta_data"] = _compose_meta_data(kkt, key)
@@ -135,6 +146,6 @@ class KktParser(PyprojectParser):
 
     def write(self, kkt_config: Dict[str, Any]) -> None:
         pyproj = super().read()
-        pyproj["tool"]["kkt"] = kkt_config
+        pyproj.setdefault("tool", {})["kkt"] = kkt_config
 
         super().write(pyproj)

@@ -78,9 +78,10 @@ def confirm_initialize() -> bool:
     )
 
 
-@click.command()
 @kkt_command(init=True)
-def init(api: KaggleApi, kkt: Dict, pyproject_path: Path) -> None:
+def init(
+    api: KaggleApi, kkt: Dict, pyproject_path: Path, *args: List, **kwargs: Dict
+) -> None:
     if kkt is not None and not confirm_initialize():
         return
     click.echo("Appending Kkt section into your pyproject.toml config.")

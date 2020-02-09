@@ -24,7 +24,6 @@ def status_impl(api: KaggleApi, meta_data: Dict) -> str:
     return message
 
 
-@click.command()
 @kkt_command()
 def status(api: KaggleApi, kkt: Dict, *args: List, **kwargs: Dict) -> None:
     if "meta_data" not in kkt:

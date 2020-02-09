@@ -96,11 +96,6 @@ def dump_push_result(result: KernelPushResponse) -> None:
         print("version: {}".format(result.versionNumber))
 
 
-def merge_cli_args(meta_data: Dict, cli_args: Dict) -> Dict:
-    valid_args = {k: v for k, v in cli_args.items() if v is not None}
-    return {**meta_data, **valid_args}
-
-
 def get_env_variables(env_variables: Dict) -> Dict:
     result = {**env_variables}
     for k, v in os.environ.items():
@@ -111,7 +106,6 @@ def get_env_variables(env_variables: Dict) -> Dict:
     return result
 
 
-@click.command()
 @kkt_command()
 def push(api: KaggleApi, kkt: Dict, pyproject_path: Path, **kwargs: Dict) -> None:
     repo = Repo(pyproject_path.parent)
@@ -121,9 +115,8 @@ def push(api: KaggleApi, kkt: Dict, pyproject_path: Path, **kwargs: Dict) -> Non
 
     if "meta_data" not in kkt:
         raise MetaDataNotFound()
-    meta_data = kkt["meta_data"].value
 
-    meta_data = merge_cli_args(meta_data, kwargs)
+    meta_data = kkt["meta_data"].value
     env_variables = get_env_variables(kkt.get("environment_variables", {}))
 
     result = push_impl(api, meta_data, env_variables)
