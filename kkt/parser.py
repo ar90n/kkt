@@ -138,7 +138,12 @@ class KktParser(PyprojectParser):
         except (NonExistentKey, KeyError):
             raise KktSectionNotFound()
 
-        kkt["meta_data"] = _compose_meta_data(kkt, key)
+        # following code didn't work.
+        # kkt["meta_data"] =  _compose_meta_data(kkt, key)
+        tmp =  _compose_meta_data(kkt, key)
+        del kkt["meta_data"]
+        kkt.add("meta_data", tmp)
+
         kkt = merge(DEFAULT_KKT_CONFIG, kkt)
         _validate_keys(kkt, MANDATORY_KEYS)
 

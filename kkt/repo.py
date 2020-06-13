@@ -2,9 +2,8 @@ import re
 from pathlib import Path
 from typing import Dict
 
-from tomlkit import dumps as dumps_as_toml
-
 from git import Repo as GitRepo
+from tomlkit import dumps as dumps_as_toml
 
 from .exception import AlreadyPushed, FoundUncommitedFiles
 

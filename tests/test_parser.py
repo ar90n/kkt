@@ -142,7 +142,8 @@ def test_kkt_parser_write(given, chdatadir):
     path = chdatadir / given
     parser = KktParser(path)
 
-    kkt = {**parser.read(), "slug": "modify"}
+    kkt = parser.read()
+    kkt["meta_data"]["slug"] = "modify"
     parser.write(kkt)
 
     kkt2 = parser.read()
