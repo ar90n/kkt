@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kkt"
-version = "0.2.0"
+version = "0.2.1"
 description = "A tool for kaggle kernel"
 authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
 license = "MIT"
