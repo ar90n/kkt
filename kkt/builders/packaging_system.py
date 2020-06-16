@@ -1,4 +1,3 @@
-from os import getcwd
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import List
@@ -7,34 +6,36 @@ from pkg_resources.extern.packaging.specifiers import SpecifierSet
 from poetry.factory import Factory
 from poetry.io.null_io import NullIO
 from poetry.masonry.builders import WheelBuilder
-from poetry.poetry import Poetry
 from poetry.utils.env import NullEnv
 
 from .package import Package
-from .requirements import fetch_requirement_pkgs
 
 
-def _get_pkg_name(require):
+def _get_constraint(require) -> str:
     constraint = str(require.constraint)
+    if constraint == "*":
+        constraint = ""
     if 0 < len(constraint) and constraint[0] in "0123456789":
         constraint = "==" + constraint
-    constraint = str(SpecifierSet(constraint))
-
-    return f"{require.name}{constraint}"
+    return str(SpecifierSet(constraint))
 
 
-def _get_required_pkg_names(poetry: Poetry) -> List[str]:
-    return [_get_pkg_name(r) for r in poetry.package.requires]
+def _get_pkg_name(require, enable_constraint: bool = False):
+    constraint = _get_constraint(require) if enable_constraint else ""
+    pkg_name = f"{require.name}{constraint}"
+    return pkg_name
 
 
-def _create_work_dir(poetry: Poetry):
-    work_dir_path = poetry.file.path.parent / ".kkt"
-    work_dir_path.mkdir(exist_ok=True)
-    return work_dir_path
+def get_dependencies(enable_constraint: bool = False) -> List[str]:
+    poetry = Factory().create_poetry(Path.cwd())
+    dependencies = [
+        _get_pkg_name(r, enable_constraint) for r in poetry.package.requires
+    ]
+    return dependencies
 
 
-def build_package(with_requirements: bool) -> List[Package]:
-    poetry = Factory().create_poetry(getcwd())
+def build_packages() -> List[Package]:
+    poetry = Factory().create_poetry(Path.cwd())
     env = NullEnv()
     io = NullIO()
 
@@ -44,10 +45,5 @@ def build_package(with_requirements: bool) -> List[Package]:
         pkg_path = temp_dir / wheel_pkg_name
         pkg_bytes = pkg_path.read_bytes()
         pkgs = [Package(wheel_pkg_name, pkg_bytes)]
-
-    if with_requirements:
-        pkg_names = _get_required_pkg_names(poetry)
-        work_dir = _create_work_dir(poetry)
-        pkgs.extend(fetch_requirement_pkgs(pkg_names, work_dir))
 
     return pkgs

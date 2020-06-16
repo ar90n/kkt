@@ -10,7 +10,7 @@ from kkt.parser import KktParser
     "given, expected",
     [
         (
-            ["comp", "0", "slug", "", "", "", "", "", "", "", ""],
+            ["comp", "0", "slug", "", "", "", "", "", "", "", "", ""],
             {
                 "meta_data": {
                     "competition": "comp",
@@ -22,6 +22,7 @@ from kkt.parser import KktParser
                     "enable_internet": False,
                     "dataset_sources": [],
                     "competition_sources": ["comp"],
+                    "enable_constraint": False,
                 },
                 "enable_git_tag": False,
             },
@@ -53,6 +54,7 @@ def test_commands_init(chdatadir, cli_runner, kaggle_api, monkeypatch):
             "data",
             "N",
             "y",
+            "y",
         ]
     )
 
@@ -71,6 +73,7 @@ def test_commands_init(chdatadir, cli_runner, kaggle_api, monkeypatch):
             "kernel_data_sources": [],
             "competition_sources": ["comp"],
             "keywords": [],
+            "enable_constraint": True,
         },
         "enable_git_tag": True,
     }

@@ -2,10 +2,6 @@ class FoundUncommitedFiles(EnvironmentError):
     pass
 
 
-class AlreadyPushed(EnvironmentError):
-    pass
-
-
 class KktSectionNotFound(EnvironmentError):
     pass
 
@@ -23,4 +19,8 @@ class NotSupportedKernelType(ValueError):
 
 
 class InvalidTarget(ValueError):
+    pass
+
+
+class InstallKernelError(RuntimeError):
     pass

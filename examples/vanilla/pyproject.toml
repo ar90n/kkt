@@ -6,16 +6,18 @@ authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
-pandas = "^0.25.0"
+pandas = "^1.0.0"
+typer = "^0.3.0"
 
 [tool.poetry.dev-dependencies]
-kkt = "^0.1.5"
+kkt = {path = "../.."}
 
 
 [tool.kkt]
 enable_git_tag = false
 
 [tool.kkt.meta_data]
+with_constraint = true
 code_file = "script.py"
 competition = "digit-recognizer"
 competition_sources = ["digit-recognizer"]

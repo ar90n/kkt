@@ -1,16 +1,15 @@
 import re
 from pathlib import Path
-from typing import Union, Dict, List, Any, Iterable
+from typing import Any, Dict, List, Union
 
-from tomlkit.toml_file import TOMLFile
 from tomlkit.exceptions import NonExistentKey
-from tomlkit import table
+from tomlkit.toml_file import TOMLFile
 
 from .exception import (
+    InvalidTarget,
     KktSectionNotFound,
     MandatoryKeyNotFound,
     MetaDataNotFound,
-    InvalidTarget,
 )
 from .utils.dict import merge
 
@@ -26,6 +25,7 @@ DEFAULT_KKT_CONFIG: Dict = {
         "kernel_data_sources": [],
         "competition_sources": [],
         "keywords": [],
+        "enable_constraint": False,
     },
     "enable_git_tag": False,
 }
@@ -140,7 +140,7 @@ class KktParser(PyprojectParser):
 
         # following code didn't work.
         # kkt["meta_data"] =  _compose_meta_data(kkt, key)
-        tmp =  _compose_meta_data(kkt, key)
+        tmp = _compose_meta_data(kkt, key)
         del kkt["meta_data"]
         kkt.add("meta_data", tmp)
 

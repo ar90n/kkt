@@ -1,5 +1,5 @@
-from typing import Dict
 import json
+from typing import Dict
 
 from .bootstrap import create_bootstrap_code
 
@@ -13,10 +13,14 @@ def erace_all_outputs(notebook: Dict) -> Dict:
 
 
 def create_bootstrap_cell(
-    pkg_encoded: str, env_variables: Dict, enable_internet: bool = False
+    pkg_encoded: str,
+    pkg_dataset: str,
+    env_variables: Dict,
+    enable_internet: bool = False,
 ) -> Dict:
     bootstrap_code = create_bootstrap_code(
         pkg_encoded=pkg_encoded,
+        pkg_dataset=pkg_dataset,
         env_variables=env_variables,
         enable_internet=enable_internet,
     )
@@ -32,6 +36,7 @@ def create_bootstrap_cell(
 def create_notebook_kernel(
     notebook_body: str,
     pkg_encoded: str,
+    pkg_dataset: str,
     env_variables: Dict,
     enable_internet: bool = False,
 ) -> str:
@@ -39,6 +44,7 @@ def create_notebook_kernel(
 
     bootstrap_cell = create_bootstrap_cell(
         pkg_encoded=pkg_encoded,
+        pkg_dataset=pkg_dataset,
         env_variables=env_variables,
         enable_internet=enable_internet,
     )

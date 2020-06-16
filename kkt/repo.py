@@ -5,7 +5,7 @@ from typing import Dict
 from git import Repo as GitRepo
 from tomlkit import dumps as dumps_as_toml
 
-from .exception import AlreadyPushed, FoundUncommitedFiles
+from .exception import FoundUncommitedFiles
 
 
 def _create_tag(version: int) -> str:

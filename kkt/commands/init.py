@@ -1,15 +1,15 @@
-from typing import Dict, List, Any
-from pathlib import Path
-from .kkt_command import kkt_command
-from ..parser import KktParser, DEFAULT_KKT_CONFIG
-from ..exception import KktSectionNotFound
 from enum import Enum
-
-from kaggle.models.kaggle_models_extended import KernelPushResponse
-from kaggle.models.kernel_push_request import KernelPushRequest
-from kaggle import KaggleApi
+from pathlib import Path
+from typing import Any, Dict, List
 
 import click
+from kaggle import KaggleApi
+from kaggle.models.kaggle_models_extended import KernelPushResponse
+from kaggle.models.kernel_push_request import KernelPushRequest
+
+from ..exception import KktSectionNotFound
+from ..parser import DEFAULT_KKT_CONFIG, KktParser
+from .kkt_command import kkt_command
 
 
 class KernelType(Enum):
@@ -62,6 +62,10 @@ def init_impl(api: KaggleApi) -> Dict:
     )
     meta_data["dataset_sources"] = dataset_prompt()
     meta_data["competition_sources"] = [meta_data["competition"]]
+    meta_data["enable_constraint"] = click.confirm(
+        "enable_constraint",
+        default=DEFAULT_KKT_CONFIG["meta_data"]["enable_constraint"],
+    )
 
     kkt_config: Dict[str, Any] = {
         "meta_data": meta_data,
