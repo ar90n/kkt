@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Any
 from functools import singledispatch
 
+import click
 from kaggle import KaggleApi
 from kaggle.models.dataset_new_request import DatasetNewRequest
 from kaggle.models.dataset_new_version_request import DatasetNewVersionRequest
@@ -13,7 +14,7 @@ from kaggle.models.kaggle_models_extended import (
 )
 from kaggle.models.kernel_push_request import KernelPushRequest
 
-from .resource import get_slug
+from .resource import get_slug, get_username
 
 
 @dataclass
@@ -117,7 +118,6 @@ def list_outputs(api: KaggleApi, kernel_slug: str):
 
 def create_dataset(
     api: KaggleApi,
-    owner_slug: str,
     dataset_slug: str,
     license_name: str,
     target_dir: Path,
@@ -126,6 +126,7 @@ def create_dataset(
     if len(dataset_slug) < 6 or len(dataset_slug) > 50:
         raise ValueError("The dataset slug must be between 6 and 50 characters")
 
+    owner_slug = get_username(api)
     request = DatasetNewRequest(
         title=dataset_slug,
         slug=dataset_slug,
@@ -148,12 +149,12 @@ def create_dataset(
 
 def update_dataset(
     api: KaggleApi,
-    owner_slug: str,
     dataset_slug: str,
     target_dir: Path,
     quiet=False,
     delete_old_versions=True,
 ):
+    owner_slug = get_username(api)
     request = DatasetNewVersionRequest(
         version_notes="test",
         subtitle=None,
@@ -183,26 +184,26 @@ def print_response(result: Any) -> None:
 @print_response.register
 def _print_KernelPushResponse(result: KernelPushResponse) -> None:
     if result.error is not None:
-        print("error: {}".format(result.error))
+        click.echo("error: {}".format(result.error))
     else:
-        print("ref: {}".format(result.ref))
-        print("url: {}".format(result.url))
-        print("version: {}".format(result.versionNumber))
+        click.echo("ref: {}".format(result.ref))
+        click.echo("url: {}".format(result.url))
+        click.echo("version: {}".format(result.versionNumber))
 
 
 @print_response.register
 def _print_DatasetNewResponse(result: DatasetNewResponse) -> None:
     if result.status == "error":
-        print("error: {}".format(result.error))
+        click.echo("error: {}".format(result.error))
     else:
-        print("ref: {}".format(result.ref))
-        print("url: {}".format(result.url))
+        click.echo("ref: {}".format(result.ref))
+        click.echo("url: {}".format(result.url))
 
 
 @print_response.register
 def _print_DatasetNewVersionResponse(result: DatasetNewVersionResponse) -> None:
     if result.status == "error":
-        print("error: {}".format(result.error))
+        click.echo("error: {}".format(result.error))
     else:
-        print("ref: {}".format(result.ref))
-        print("url: {}".format(result.url))
+        click.echo("ref: {}".format(result.ref))
+        click.echo("url: {}".format(result.url))

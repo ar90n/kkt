@@ -24,7 +24,7 @@ def competition_prompt(api: KaggleApi) -> str:
     competition_query = click.prompt("competition", default="", show_default=False)
     competitions = api.competitions_list(search=competition_query)
     for i, c in enumerate(competitions):
-        print(i, c)
+        click.echo(f"{i} {c}")
     competition_index = click.prompt(
         ">", type=int, show_choices=False, prompt_suffix=" "
     )

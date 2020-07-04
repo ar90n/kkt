@@ -4,6 +4,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, Dict, List
 
+import click
 from kaggle import KaggleApi
 from kaggle.models.kaggle_models_extended import KernelPushResponse
 
@@ -92,12 +93,10 @@ def _get_package_locations(list_response: Dict[str, Any]) -> List[PackageLocatio
 
 
 def wait_for_install_kernel_completion(
-    api: KaggleApi, owner_slug: str, kernel_slug: str, quiet: bool = False
+    api: KaggleApi, kernel_slug: str, quiet: bool = False
 ) -> Dict[str, Any]:
     while True:
-        response = api.process_response(
-            api.kernel_output_with_http_info(owner_slug, kernel_slug)
-        )
+        response = api.process_response(api.kernel_output_with_http_info(kernel_slug))
 
         if response["log"] != "":
             logs = json.loads(response["log"])
@@ -108,7 +107,7 @@ def wait_for_install_kernel_completion(
                 return response
 
         if not quiet:
-            print("Wait for install kernel completion...")
+            click.echo("Wait for install kernel completion...")
         time.sleep(10)
 
 
@@ -116,13 +115,12 @@ def upload_requirement_pkgs(
     api: KaggleApi, meta_data: Dict, target_dir: Path, quiet: bool = False
 ):
     slug = get_dataset_slug(api, meta_data)
-    owner_slug, dataset_slug = slug.split("/")[-2:]
+    _, dataset_slug = slug.split("/")[-2:]
     license_name = "CC0-1.0"
     status = api.dataset_status(slug)
     if status is None:
         return kernel_proc.create_dataset(
             api,
-            owner_slug=owner_slug,
             dataset_slug=dataset_slug,
             license_name=license_name,
             target_dir=target_dir,
@@ -130,11 +128,7 @@ def upload_requirement_pkgs(
         )
     else:
         return kernel_proc.update_dataset(
-            api,
-            owner_slug=owner_slug,
-            dataset_slug=dataset_slug,
-            target_dir=target_dir,
-            quiet=quiet,
+            api, dataset_slug=dataset_slug, target_dir=target_dir, quiet=quiet,
         )
 
 
@@ -149,7 +143,7 @@ def push_install_kernel(
     kernel_response = kernel_proc.push(api, kernel_push_params, kernel_body)
     if not quiet:
         kernel_proc.print_response(kernel_response)
-        print("Pushing install kernel successed.")
+        click.echo("Pushing install kernel successed.")
 
     return kernel_response
 
@@ -163,10 +157,9 @@ def install(
     meta_data = kkt["meta_data"].value
     kernel_response = push_install_kernel(api, meta_data, quiet)
 
-    owner_slug = get_owner_slug_from(kernel_response)
     kernel_slug = get_kernel_slug_from(kernel_response)
     kernel_output = wait_for_install_kernel_completion(
-        api, owner_slug=owner_slug, kernel_slug=kernel_slug, quiet=quiet
+        api, kernel_slug=kernel_slug, quiet=quiet
     )
 
     with TemporaryDirectory() as tmp_dir:

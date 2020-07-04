@@ -19,7 +19,7 @@ def _get_package_locations(list_response: Dict[str, Any]) -> List[PackageLocatio
 
 def _print_paths(paths: List[Path]) -> None:
     for p in paths:
-        print(f"save to:{str(p)}")
+        click.echo(f"save to:{str(p)}")
 
 
 @kkt_command()
@@ -39,11 +39,11 @@ def download(
     kernel_slug = meta_data["slug"]
     status = kernel_proc.status(api, kernel_slug)
     if status["status"] != "complete":
-        print("Kernel has not been completed yet.")
+        click.echo("Kernel has not been completed yet.")
         return
 
     list_response = kernel_proc.list_outputs(api, kernel_slug)
     pkg_locations = _get_package_locations(list_response)
     download_files = fetch_packages(pkg_locations, dst_dir_path, quiet)
     for p in download_files:
-        print(f"save to:{str(p)}")
+        click.echo(f"save to:{str(p)}")

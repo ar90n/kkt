@@ -26,5 +26,5 @@ def test_commands_install(
 
     with TemporaryDirectory() as tmp_dir:
         ret = cli_runner.invoke(download, ["--quiet", str(tmp_dir)])
-        for l in ret.output.strip().split("\n"):
-            assert re.match(expected["output"], l)
+        for line in ret.output.strip().split("\n"):
+            assert re.match(expected["output"], line)
