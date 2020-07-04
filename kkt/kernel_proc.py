@@ -103,6 +103,18 @@ def push(
     return result
 
 
+def status(api: KaggleApi, kernel_slug: str):
+    user_name = api.config_values[api.CONFIG_NAME_USER]
+    return api.kernel_status(user_name, kernel_slug)
+
+
+def list_outputs(api: KaggleApi, kernel_slug: str):
+    user_name = api.config_values[api.CONFIG_NAME_USER]
+    return api.process_response(
+        api.kernel_output_with_http_info(user_name, kernel_slug)
+    )
+
+
 def create_dataset(
     api: KaggleApi,
     owner_slug: str,

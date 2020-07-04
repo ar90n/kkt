@@ -11,7 +11,7 @@ from .exception import (
     MandatoryKeyNotFound,
     MetaDataNotFound,
 )
-from .utils.dict import merge
+from .util import merge
 
 MANDATORY_KEYS: List = [("meta_data", [("slug", []), ("code_file", [])])]
 

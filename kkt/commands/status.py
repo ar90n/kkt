@@ -10,12 +10,12 @@ from kaggle.models.kernel_push_request import KernelPushRequest
 from ..exception import MetaDataNotFound
 from ..parser import DEFAULT_KKT_CONFIG, KktParser
 from .kkt_command import kkt_command
+from .. import kernel_proc
 
 
 def status_impl(api: KaggleApi, meta_data: Dict) -> str:
-    user_name = api.config_values[api.CONFIG_NAME_USER]
-    slug = meta_data.get("slug")
-    result = api.kernel_status(user_name, slug)
+    slug = meta_data["slug"]
+    result = kernel_proc.status(api, slug)
 
     message_elms = [f"status: {result['status']}"]
     if result["failureMessage"]:

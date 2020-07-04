@@ -24,7 +24,7 @@ from kkt.commands.status import status, status_impl
 )
 def test_status_impl(given, expected, kaggle_api):
     api = kaggle_api(**given)
-    actual = status_impl(api, {})
+    actual = status_impl(api, {"slug": "kkt"})
     assert expected == actual
 
 

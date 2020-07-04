@@ -4,7 +4,6 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, Dict, List
 
-import requests
 from kaggle import KaggleApi
 from kaggle.models.kaggle_models_extended import KernelPushResponse
 
@@ -13,6 +12,7 @@ from ..builders.packaging_system import get_dependencies
 from ..exception import InstallKernelError, MetaDataNotFound
 from ..resource import get_dataset_slug
 from .kkt_command import kkt_command
+from ..fetch import PackageLocation, fetch_packages
 
 
 def create_kernel_body(install_pkgs: List[str]) -> str:
@@ -84,6 +84,13 @@ def get_error_messages(logs: Dict) -> List[str]:
     return result
 
 
+def _get_package_locations(list_response: Dict[str, Any]) -> List[PackageLocation]:
+    return [
+        PackageLocation(item["url"], item["fileName"])
+        for item in list_response["files"]
+    ]
+
+
 def wait_for_install_kernel_completion(
     api: KaggleApi, owner_slug: str, kernel_slug: str, quiet: bool = False
 ) -> Dict[str, Any]:
@@ -103,21 +110,6 @@ def wait_for_install_kernel_completion(
         if not quiet:
             print("Wait for install kernel completion...")
         time.sleep(10)
-
-
-def fetch_pkgs_from_install_kernel_output(
-    response: Dict[str, Any], target_dir: Path, quiet: bool = False
-) -> List[Path]:
-    outfiles = []
-    for item in response["files"]:
-        download_response = requests.get(item["url"])
-        outfile = target_dir / item["fileName"]
-        outfiles.append(outfile)
-        with outfile.open("wb") as out:
-            out.write(download_response.content)
-        if not quiet:
-            print("Output file downloaded to %s" % str(outfile))
-    return outfiles
 
 
 def upload_requirement_pkgs(
@@ -179,9 +171,8 @@ def install(
 
     with TemporaryDirectory() as tmp_dir:
         target_dir = Path(tmp_dir)
-        fetch_pkgs_from_install_kernel_output(
-            kernel_output, target_dir=target_dir, quiet=quiet
-        )
+        pkg_locations = _get_package_locations(kernel_output)
+        fetch_packages(pkg_locations, target_dir, quiet=quiet)
         ret = upload_requirement_pkgs(
             api, meta_data, target_dir=target_dir, quiet=quiet
         )
