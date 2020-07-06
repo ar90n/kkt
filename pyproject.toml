@@ -13,7 +13,6 @@ tomlkit = "^0.5.8"
 poetry = "1.0.0"
 lockfile = "^0.12.2"
 gitpython = "^3.1"
-requests-mock = "^1.8.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.3.4"
@@ -40,6 +39,7 @@ pytest-xdist = "^1.31.0"
 johnnydep = "^1.5"
 pipdeptree = "^0.13.2"
 vulture = "^1.5"
+requests-mock = "^1.8.0"
 
 [tool.poetry.scripts]
 kkt = 'kkt.cli:main'
