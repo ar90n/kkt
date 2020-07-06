@@ -11,7 +11,7 @@ from kaggle.models.kaggle_models_extended import KernelPushResponse
 from .. import kernel_proc
 from ..builders.packaging_system import get_dependencies
 from ..exception import InstallKernelError, MetaDataNotFound
-from ..resource import get_dataset_slug
+from ..resource import get_username, get_dataset_slug
 from .kkt_command import kkt_command
 from ..fetch import PackageLocation, fetch_packages
 
@@ -80,7 +80,7 @@ def get_error_messages(logs: Dict) -> List[str]:
     for log in logs:
         stream_name = log.get("stream_name", "stderr")
         data = log.get("data", "")
-        if stream_name == "stderr" and not data.startswith("[NbConvertApp]"):
+        if stream_name == "stderr" and not (data.startswith("[NbConvertApp]") or data.startswith("WARNING:")):
             result.append(data)
     return result
 
@@ -96,7 +96,8 @@ def wait_for_install_kernel_completion(
     api: KaggleApi, kernel_slug: str, quiet: bool = False
 ) -> Dict[str, Any]:
     while True:
-        response = api.process_response(api.kernel_output_with_http_info(kernel_slug))
+        owner_slug = get_username(api)
+        response = api.process_response(api.kernel_output_with_http_info(owner_slug, kernel_slug))
 
         if response["log"] != "":
             logs = json.loads(response["log"])
