@@ -5,9 +5,8 @@ description = ""
 authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 pandas = "^1.0.0"
-typer = "^0.3.0"
 
 [tool.poetry.dev-dependencies]
 kkt = {path = "../.."}

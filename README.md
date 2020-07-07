@@ -94,11 +94,11 @@ description = ""
 authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
-pandas = "^0.25.0"
+python = "^3.7"
+pandas = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
-kkt = "^0.1.5"
+kkt = "^0.3.1"
 
 
 [tool.kkt]
