@@ -1,9 +1,23 @@
 [tool.poetry]
 name = "kkt"
-version = "0.3.1"
+version = "0.3.2"
 description = "A tool for kaggle kernel"
 authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
 license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/ar90n/kkt"
+repository = "https://github.com/ar90n/kkt"
+keywords = ["kaggle"]
+classifiers = [
+    "Environment :: Console",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+include = [
+    "LICENSE",
+]
 
 [tool.poetry.dependencies]
 python = "^3.7"
