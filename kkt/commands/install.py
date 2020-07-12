@@ -34,7 +34,7 @@ def pip_install(pkgs):
 def pip_download(pkgs):
     if len(pkgs) == 0:
         return ""
-    args = ["pip", "download", *pkgs]
+    args = ["pip", "download", "--no-deps", *pkgs]
     proc = subprocess.Popen(args, stdout=subprocess.PIPE)
     return proc.communicate()[0].decode("utf-8")
 
