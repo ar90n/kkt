@@ -7,7 +7,7 @@ authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.7"
 timm = "^0.1.30"
-kaggle_timm_pretrained = "^0.2.0"
+kaggle_timm_pretrained = "^0.3.0"
 pytorch-lightning = "^0.8.5"
 torchvision = "^0.6.1"
 Pillow = "^7.2.0"
