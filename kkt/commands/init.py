@@ -1,6 +1,6 @@
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import click
 from kaggle import KaggleApi
@@ -82,6 +82,30 @@ def confirm_initialize() -> bool:
     )
 
 
+def get_project_name(parser: KktParser) -> Optional[str]:
+    return parser.read_all().get("tool", {}).get("poetry", {}).get("name")
+
+
+def has_package_source(project_root_path: Path, project_name: str) -> bool:
+    pkg_dir = project_root_path / project_name
+    src_pkg_dir = project_root_path / "src" / project_name
+    return pkg_dir.exists() or src_pkg_dir.exists()
+
+
+def confirm_add_package_source(project_name: str):
+    return click.confirm("Would you like to add {project_name} package direcctory?")
+
+
+def add_package_source(project_root_path: Path, project_name: str) -> None:
+    pkg_dir_path = project_root_path / "src" / project_name
+    print(pkg_dir_path)
+    pkg_dir_path.mkdir(parents=True, exist_ok=True)
+
+    init_file_path = pkg_dir_path / "__init__.py"
+    print(init_file_path)
+    init_file_path.touch()
+
+
 @kkt_command(init=True)
 def init(
     api: KaggleApi, kkt: Dict, pyproject_path: Path, *args: List, **kwargs: Dict
@@ -94,3 +118,18 @@ def init(
 
     parser = KktParser(pyproject_path)
     parser.write(kkt)
+
+    project_name = get_project_name(parser)
+    print(project_name)
+    if project_name is None:
+        print("no name")
+        return
+
+    project_root_path = pyproject_path.parent
+    if has_package_source(project_root_path, project_name):
+        print("has")
+        return
+
+    if confirm_add_package_source(project_name):
+        print("add")
+        add_package_source(project_root_path, project_name)

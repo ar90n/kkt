@@ -131,6 +131,9 @@ class KktParser(PyprojectParser):
     def __init__(self, path: Union[str, Path]) -> None:
         super().__init__(path)
 
+    def read_all(self) -> Dict[str, Any]:
+        return super().read()
+
     def read(self, key: str = ".") -> Dict[str, Any]:
         pyproj = super().read()
         try:
