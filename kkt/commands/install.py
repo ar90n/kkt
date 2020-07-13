@@ -80,7 +80,9 @@ def get_error_messages(logs: Dict) -> List[str]:
     for log in logs:
         stream_name = log.get("stream_name", "stderr")
         data = log.get("data", "")
-        if stream_name == "stderr" and not (data.startswith("[NbConvertApp]") or data.startswith("WARNING:")):
+        if stream_name == "stderr" and not (
+            data.startswith("[NbConvertApp]") or data.startswith("WARNING:")
+        ):
             result.append(data)
     return result
 
@@ -97,7 +99,9 @@ def wait_for_install_kernel_completion(
 ) -> Dict[str, Any]:
     while True:
         owner_slug = get_username(api)
-        response = api.process_response(api.kernel_output_with_http_info(owner_slug, kernel_slug))
+        response = api.process_response(
+            api.kernel_output_with_http_info(owner_slug, kernel_slug)
+        )
 
         if response["log"] != "":
             logs = json.loads(response["log"])

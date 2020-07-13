@@ -4,6 +4,7 @@ import torch
 import pandas as pd
 import numpy as np
 
+
 def load_train_data(root: Path):
     train_data_path = root / "train.csv"
     train_data = pd.read_csv(train_data_path)
@@ -31,4 +32,3 @@ def save_result(result):
         header="ImageId,Label",
         comments="",
     )
-
