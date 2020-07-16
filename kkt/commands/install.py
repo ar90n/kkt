@@ -27,6 +27,8 @@ def pip_freeze():
     return run_result[0].decode("utf-8").split("\\n")
 
 def pip_install(pkgs):
+    if len(pkgs) == 0:
+        return
     args = ["pip", "install", *pkgs]
     proc = subprocess.Popen(args, stdout=subprocess.PIPE)
     return proc.communicate()[0].decode("utf-8")
@@ -170,7 +172,11 @@ def install(
     with TemporaryDirectory() as tmp_dir:
         target_dir = Path(tmp_dir)
         pkg_locations = _get_package_locations(kernel_output)
-        fetch_packages(pkg_locations, target_dir, quiet=quiet)
+        fetch_files = fetch_packages(pkg_locations, target_dir, quiet=quiet)
+        if len(fetch_files) == 0:
+            click.echo("Extra required packages are nothing.")
+            return
+
         ret = upload_requirement_pkgs(
             api, meta_data, target_dir=target_dir, quiet=quiet
         )
