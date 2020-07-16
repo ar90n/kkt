@@ -166,7 +166,7 @@ Wait for install kernel completion...
 Wait for install kernel completion...
 Output file downloaded to /tmp/tmpq6m9iq9p/timm-0.1.30-py3-none-any.whl
 Starting upload for file timm-0.1.30-py3-none-any.whl
-100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 203k/203k [00:03<00:00, 53.7kB/s]
+100%|█████████████████████████████████████████████████████████| 203k/203k [00:03<00:00, 53.7kB/s]
 Upload successful: timm-0.1.30-py3-none-any.whl (203KB)
 ref: ar90ngas/mnist-efficientnet-requirements
 url: https://www.kaggle.com/ar90ngas/mnist-efficientnet-requirements
