@@ -149,7 +149,7 @@ description = "Python Git Library"
 name = "gitpython"
 optional = false
 python-versions = ">=3.4"
-version = "3.1.3"
+version = "3.1.7"
 
 [package.dependencies]
 gitdb = ">=4.0.1,<5"
@@ -270,19 +270,25 @@ testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pyt
 
 [[package]]
 category = "dev"
-description = "A tool for kaggle kernel"
+description = ""
+develop = true
 name = "kkt"
 optional = false
-python-versions = ">=3.7,<4.0"
-version = "0.3.0"
+python-versions = "^3.7"
+version = "0.3.2"
 
 [package.dependencies]
-click = ">=7.0,<8.0"
-gitpython = ">=3.1,<4.0"
-kaggle = ">=1.5,<2.0"
-lockfile = ">=0.12.2,<0.13.0"
+click = "^7.0"
+gitpython = "^3.1"
+kaggle = "^1.5"
+lockfile = "^0.12.2"
 poetry = "1.0.0"
-tomlkit = ">=0.5.8,<0.6.0"
+tomlkit = "^0.5.8"
+
+[package.source]
+reference = ""
+type = "directory"
+url = "../.."
 
 [[package]]
 category = "dev"
@@ -745,8 +751,8 @@ gitdb = [
     {file = "gitdb-4.0.5.tar.gz", hash = "sha256:c9e1f2d0db7ddb9a704c2a0217be31214e91a4fe1dea1efad19ae42ba0c285c9"},
 ]
 gitpython = [
-    {file = "GitPython-3.1.3-py3-none-any.whl", hash = "sha256:ef1d60b01b5ce0040ad3ec20bc64f783362d41fa0822a2742d3586e1f49bb8ac"},
-    {file = "GitPython-3.1.3.tar.gz", hash = "sha256:e107af4d873daed64648b4f4beb89f89f0cfbe3ef558fc7821ed2331c2f8da1a"},
+    {file = "GitPython-3.1.7-py3-none-any.whl", hash = "sha256:fa3b92da728a457dd75d62bb5f3eb2816d99a7fe6c67398e260637a40e3fafb5"},
+    {file = "GitPython-3.1.7.tar.gz", hash = "sha256:2db287d71a284e22e5c2846042d0602465c7434d910406990d5b74df4afb0858"},
 ]
 html5lib = [
     {file = "html5lib-1.1-py2.py3-none-any.whl", hash = "sha256:0d78f8fde1c230e99fe37986a60526d7049ed4bf8a9fadbad5f00e22e58e041d"},
@@ -775,10 +781,7 @@ keyring = [
     {file = "keyring-19.3.0-py2.py3-none-any.whl", hash = "sha256:9b80469783d3f6106bce1d389c6b8b20c8d4d739943b1b8cd0ddc2a45d065f9d"},
     {file = "keyring-19.3.0.tar.gz", hash = "sha256:ee3d35b7f1ac3cb69e9a1e4323534649d3ab2fea402738a77e4250c152970fed"},
 ]
-kkt = [
-    {file = "kkt-0.3.0-py3-none-any.whl", hash = "sha256:595108d834a45e5c035c25a0d6d14a4e6ab31502b6ab6b231cf7db8189979c9a"},
-    {file = "kkt-0.3.0.tar.gz", hash = "sha256:950dc728124ef9a7ab642c8e6074184d75bb2f54e9da4b167842b4686f720226"},
-]
+kkt = []
 lockfile = [
     {file = "lockfile-0.12.2-py2.py3-none-any.whl", hash = "sha256:6c3cb24f344923d30b2785d5ad75182c8ea7ac1b6171b08657258ec7429d50fa"},
     {file = "lockfile-0.12.2.tar.gz", hash = "sha256:6aed02de03cba24efabcd600b30540140634fc06cfa603822d508d5361e9f799"},
