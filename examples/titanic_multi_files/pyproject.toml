@@ -22,7 +22,7 @@ jupyter = "^1.0.0"
 enable_git_tag = false
 
 [tool.kkt.meta_data]
-code_file = "script.py"
+code_file = "script/logistic_regression.py"
 competition = "titanic"
 competition_sources = ["titanic"]
 dataset_sources = []
@@ -32,6 +32,14 @@ enable_internet = false
 is_private = false
 kernel_type = "script"
 slug = "titanic-multi-files"
+
+
+  [tool.kkt.meta_data.rf]
+  code_file = "script/random_forest.py"
+
+  [tool.kkt.meta_data.xgb]
+  code_file = "script/xgb.py"
+
 
 [build-system]
 requires = ["poetry>=0.12"]
