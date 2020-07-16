@@ -9,6 +9,7 @@ kkt is a tool for kaggle kernel management.
 * Show the status of the latest version
 * Push your script or notebook to the Kaggle Kernels
 * Pack and emmbedded your library codes into the generated bootstrap codes
+* Create a dataset containing your dependent packages
 * Add bootstrap codes into the head of your script or notebook automatically
 * Add git tags whose name is corresponding kernel version
 * Set environment variable for your kernels
@@ -137,6 +138,40 @@ ImageId,Label
 9,2
 ```
 
+### Create a dataset containing dependent packages if need
+In this example, there aren't extra required packages. So `kkt install` displays the following. And this step is not mandatory.
+
+```bash
+$ poetry run kkt install
+ref: /ar90ngas/kkt-example-install
+url: https://www.kaggle.com/ar90ngas/kkt-example-install
+version: 1
+Pushing install kernel successed.
+Wait for install kernel completion...
+Wait for install kernel completion...
+Wait for install kernel completion...
+Extra required packages are nothing.
+```
+
+But in the little complicated project such as mnist_efficientnet example, `kkt install` displays the following. This means that a new dataset whose slug is `ar90ngas/mnist-efficientnet-requirements` is created. And it contains an extra package which is required by this example. And this package will be installed automatically in the bootstrap code.
+
+```bash
+$ poetry run kkt install
+ref: /ar90ngas/mnist-efficientnet-install
+url: https://www.kaggle.com/ar90ngas/mnist-efficientnet-install
+version: 1
+Pushing install kernel successed.
+Wait for install kernel completion...
+Wait for install kernel completion...
+Wait for install kernel completion...
+Output file downloaded to /tmp/tmpq6m9iq9p/timm-0.1.30-py3-none-any.whl
+Starting upload for file timm-0.1.30-py3-none-any.whl
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 203k/203k [00:03<00:00, 53.7kB/s]
+Upload successful: timm-0.1.30-py3-none-any.whl (203KB)
+ref: ar90ngas/mnist-efficientnet-requirements
+url: https://www.kaggle.com/ar90ngas/mnist-efficientnet-requirements
+```
+
 ### Push notebook to Kaggle Kernels
 ```bash
 $ poetry run kkt push
@@ -152,11 +187,9 @@ $ poetry run kkt status
 status: complete
 ```
 
-## (WIP) Examples
-* Simple script example
-* Simple notebook example
-* Multi code files example
-* Environment variable and dataset example
+## Configuration
+Please see [examples](https://github.com/ar90n/kkt/tree/master/examples)
+
 
 ## License
 This software is released under the Apache License, see [LICENSE](LICENSE).
