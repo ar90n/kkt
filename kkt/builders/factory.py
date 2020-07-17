@@ -7,7 +7,7 @@ from typing import IO, Callable, Dict, Iterable
 from ..exception import NotSupportedKernelType
 from .kernels import KERNEL_CREATEORS
 from .package import Package
-from .packaging_system import build_packages
+from .packaging_system import build_packages, get_dependencies
 
 Builder = Callable[[IO[str], str, Dict], str]
 
@@ -24,18 +24,26 @@ def create_encoded_archive(pkgs: Iterable[Package]) -> str:
     return base64.b64encode(compressed).decode("utf-8")
 
 
-def get_builder(kernel_type: str, enable_internet: bool = False,) -> Builder:
+def get_builder(kernel_type: str) -> Builder:
     if kernel_type not in KERNEL_CREATEORS:
         raise NotSupportedKernelType(kernel_type)
 
-    def _builder(kernel_body_io: IO[str], pkg_dataset: str, env_variables: Dict) -> str:
+    def _builder(
+        kernel_body_io: IO[str],
+        pkg_dataset: str,
+        env_variables: Dict,
+        enable_internet: bool,
+        enable_constraint: bool,
+    ) -> str:
         encoded_archive = create_encoded_archive(build_packages())
+        dependencies = get_dependencies(enable_constraint)
         kernel_body = kernel_body_io.read()
         return KERNEL_CREATEORS[kernel_type](
             kernel_body,
             pkg_encoded=encoded_archive,
             pkg_dataset=pkg_dataset,
             env_variables=env_variables,
+            dependencies=dependencies,
             enable_internet=enable_internet,
         )
 

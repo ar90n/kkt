@@ -1,5 +1,5 @@
 import json
-from typing import Dict
+from typing import Dict, Iterable
 
 from .bootstrap import create_bootstrap_code
 
@@ -16,12 +16,14 @@ def create_bootstrap_cell(
     pkg_encoded: str,
     pkg_dataset: str,
     env_variables: Dict,
+    dependencies: Iterable[str],
     enable_internet: bool = False,
 ) -> Dict:
     bootstrap_code = create_bootstrap_code(
         pkg_encoded=pkg_encoded,
         pkg_dataset=pkg_dataset,
         env_variables=env_variables,
+        dependencies=dependencies,
         enable_internet=enable_internet,
     )
     return {
@@ -38,6 +40,7 @@ def create_notebook_kernel(
     pkg_encoded: str,
     pkg_dataset: str,
     env_variables: Dict,
+    dependencies: Iterable[str],
     enable_internet: bool = False,
 ) -> str:
     notebook_obj = erace_all_outputs(json.loads(notebook_body))
@@ -46,6 +49,7 @@ def create_notebook_kernel(
         pkg_encoded=pkg_encoded,
         pkg_dataset=pkg_dataset,
         env_variables=env_variables,
+        dependencies=dependencies,
         enable_internet=enable_internet,
     )
     notebook_obj.setdefault("cells", []).insert(0, bootstrap_cell)

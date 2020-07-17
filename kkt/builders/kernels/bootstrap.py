@@ -1,5 +1,5 @@
 import json
-from typing import Dict
+from typing import Dict, Iterable
 
 
 BOOTSTRAP_TEMPLATE: str = """def __bootstrap__():
@@ -9,6 +9,7 @@ BOOTSTRAP_TEMPLATE: str = """def __bootstrap__():
     import tarfile
     import os
     import io
+    import subprocess
     from pathlib import Path
     from tempfile import TemporaryDirectory
 
@@ -23,8 +24,11 @@ BOOTSTRAP_TEMPLATE: str = """def __bootstrap__():
         else:
             pkg_path_list.append(str(p))
     if 0 < len(pkg_path_list):
-        pkg_paths = " ".join(pkg_path_list)
-        os.system(f"pip install --no-deps {{pkg_paths}}")
+        subprocess.run(["pip", "install", "--no-deps", *pkg_path_list])
+
+    if 0 < len({dependencies}):
+        args = ["pip", "install", *{dependencies}]
+        subprocess.run(args)
 
     # this is base64 encoded source code
     tar_io = io.BytesIO(gzip.decompress(base64.b64decode("{pkg_encoded}")))
@@ -45,11 +49,13 @@ def create_bootstrap_code(
     pkg_encoded: str,
     pkg_dataset: str,
     env_variables: Dict,
+    dependencies: Iterable[str],
     enable_internet: bool = False,
 ) -> str:
     return BOOTSTRAP_TEMPLATE.format(
         pkg_encoded=pkg_encoded,
         pkg_dataset=pkg_dataset,
         env_variables=json.dumps(env_variables),
+        dependencies=dependencies,
         encoding="utf8",
     )

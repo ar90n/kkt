@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Iterable
 
 from .bootstrap import create_bootstrap_code
 
@@ -14,12 +14,14 @@ def create_script_kernel(
     pkg_encoded: str,
     pkg_dataset: str,
     env_variables: Dict,
+    dependencies: Iterable[str],
     enable_internet: bool = False,
 ) -> str:
     bootstrap_code = create_bootstrap_code(
         pkg_encoded=pkg_encoded,
         pkg_dataset=pkg_dataset,
         env_variables=env_variables,
+        dependencies=dependencies,
         enable_internet=enable_internet,
     )
     return SCRIPT_TEMPLATE.format(
