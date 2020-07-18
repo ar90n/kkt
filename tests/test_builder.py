@@ -14,9 +14,11 @@ import kkt_test_shared_data
 print("ABC:", os.environ.get("ABC"))
 print("version:", kkt_test_shared_data.__version__)
 """
-    script = script_kernel_builder(StringIO(script), "dataset", {"ABC": "1234"})
+    script = script_kernel_builder(
+        StringIO(script), "dataset", {"ABC": "1234"}, False, True
+    )
     actual = virtualenv.run(f"python -c '{script}'", capture=True)
-    actual = "\n".join(actual.split("\n")[2:])
+    actual = "\n".join(actual.split("\n")[6:])
 
     version = "0.1.0"
     expect = f"""Successfully installed kkt-test-shared-data-{version}
@@ -33,7 +35,7 @@ def test_build_notebook_kernel(chshared_datadir):
         "cells": [{"source": ["import sys"], "outputs": [], "cell_type": "code"}]
     }
     str_io = StringIO(json.dumps(base_notebook))
-    notebook = notebook_kernel_builder(str_io, "dataset", {})
+    notebook = notebook_kernel_builder(str_io, "dataset", {}, True, True)
     notebook = json.loads(notebook)
     for cell in notebook["cells"]:
         src = "".join((cell["source"]))

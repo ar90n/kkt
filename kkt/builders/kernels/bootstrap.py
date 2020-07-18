@@ -56,6 +56,6 @@ def create_bootstrap_code(
         pkg_encoded=pkg_encoded,
         pkg_dataset=pkg_dataset,
         env_variables=json.dumps(env_variables),
-        dependencies=dependencies,
+        dependencies=json.dumps(dependencies),
         encoding="utf8",
     )

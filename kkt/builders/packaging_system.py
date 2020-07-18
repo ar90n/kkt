@@ -11,19 +11,10 @@ from poetry.utils.env import NullEnv
 from .package import Package
 
 
-def _get_constraint(require) -> str:
-    constraint = str(require.constraint)
-    if constraint == "*":
-        constraint = ""
-    if 0 < len(constraint) and constraint[0] in "0123456789":
-        constraint = "==" + constraint
-    return str(SpecifierSet(constraint))
-
-
 def _get_pkg_name(require, enable_constraint: bool = False):
-    constraint = _get_constraint(require) if enable_constraint else ""
-    pkg_name = f"{require.name}{constraint}"
-    return pkg_name
+    if enable_constraint or require.is_vcs():
+        return require.base_pep_508_name
+    return require.name
 
 
 def get_dependencies(enable_constraint: bool = False) -> List[str]:

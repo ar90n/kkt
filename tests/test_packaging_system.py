@@ -12,7 +12,7 @@ def test_build_packages(chshared_datadir):
 
 @pytest.mark.parametrize(
     "enable_constraint, expected",
-    [(True, ["numpy<2.0.0,>=1.18.0"]), (False, ["numpy"])],
+    [(True, ["numpy (>=1.18.0,<2.0.0)"]), (False, ["numpy"])],
 )
 def test_get_dependencies(chshared_datadir, enable_constraint, expected):
     dependencies = get_dependencies(enable_constraint)
