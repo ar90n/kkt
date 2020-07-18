@@ -83,7 +83,7 @@ def get_error_messages(logs: Dict) -> List[str]:
         stream_name = log.get("stream_name", "stderr")
         data = log.get("data", "")
         if stream_name == "stderr" and not (
-            data.startswith("[NbConvertApp]") or data.startswith("WARNING:")
+            data.startswith("[NbConvertApp]") or data.startswith("WARNING:") or data.startswith("  Running command")
         ):
             result.append(data)
     return result
