@@ -25,10 +25,11 @@ dataset_sources = ["with_git_data"]
 kernel_data_sources = ["with_git_kernel"]
 competition_sources = ["with_git_comp"]
 keywords = ["with_git"]
-enable_constraint = false
 
 [tool.kkt.environment_variables]
 ENV001 = "ENV001"
 
 [tool.kkt]
 enable_git_tag = true
+enable_constraint = false
+extra_dependencies = []

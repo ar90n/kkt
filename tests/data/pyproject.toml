@@ -29,3 +29,5 @@ keywords = ["normal"]
 
 [tool.kkt]
 enable_git_tag = true
+enable_constraint = false
+extra_dependencies = []

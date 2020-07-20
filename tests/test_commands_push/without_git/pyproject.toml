@@ -25,7 +25,6 @@ dataset_sources = ["without_git_data"]
 kernel_data_sources = ["without_git_kernel"]
 competition_sources = ["without_git_comp"]
 keywords = ["without_git"]
-enable_constraint = false
 
   [tool.kkt.meta_data.nest]
   slug = "without_git_nest"
@@ -37,3 +36,5 @@ ENV001 = "ENV001"
 
 [tool.kkt]
 enable_git_tag = false
+enable_constraint = false
+extra_dependencies = []

@@ -10,7 +10,8 @@ dataset_sources = ["normal_data"]
 kernel_data_sources = ["normal"]
 competition_sources = ["normal"]
 keywords = ["normal"]
-enable_constraint = true
 
 [tool.kkt]
 enable_git_tag = true
+enable_constraint = true
+extra_dependencies = []

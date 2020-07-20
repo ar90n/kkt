@@ -20,10 +20,11 @@ slug = "test01"
 competition = "test01_comp"
 code_file = "test01.py"
 kernel_type = "script"
-enable_constraint = false
 
 [tool.kkt.environment_variables]
 ENV001 = "ENV001"
 
 [tool.kkt]
 enable_git_tag = true
+enable_constraint = false
+extra_dependencies = []
