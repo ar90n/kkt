@@ -39,6 +39,14 @@ def dataset_prompt() -> List:
     return dataset_sources
 
 
+def extra_dependencies_prompt() -> List:
+    extra_dependencies = []
+    while click.confirm("Would you like to add extra dependencies?"):
+        dependency = click.prompt("dependency")
+        extra_dependencies.append(dependency)
+    return extra_dependencies
+
+
 def init_impl(api: KaggleApi) -> Dict:
     meta_data: Dict[str, Any] = {}
     meta_data["competition"] = competition_prompt(api)
@@ -62,17 +70,17 @@ def init_impl(api: KaggleApi) -> Dict:
     )
     meta_data["dataset_sources"] = dataset_prompt()
     meta_data["competition_sources"] = [meta_data["competition"]]
-    meta_data["enable_constraint"] = click.confirm(
-        "enable_constraint",
-        default=DEFAULT_KKT_CONFIG["meta_data"]["enable_constraint"],
-    )
 
     kkt_config: Dict[str, Any] = {
         "meta_data": meta_data,
     }
+    kkt_config["enable_constraint"] = click.confirm(
+        "enable_constraint", default=DEFAULT_KKT_CONFIG["enable_constraint"]
+    )
     kkt_config["enable_git_tag"] = click.confirm(
         "enable_git_tag", default=DEFAULT_KKT_CONFIG["enable_git_tag"]
     )
+    kkt_config["extra_dependencies"] = extra_dependencies_prompt()
     return kkt_config
 
 

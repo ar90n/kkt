@@ -25,9 +25,10 @@ DEFAULT_KKT_CONFIG: Dict = {
         "kernel_data_sources": [],
         "competition_sources": [],
         "keywords": [],
-        "enable_constraint": False,
     },
     "enable_git_tag": False,
+    "enable_constraint": False,
+    "extra_dependencies": [],
 }
 
 META_DATA_KEYS = set(DEFAULT_KKT_CONFIG["meta_data"].keys())

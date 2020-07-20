@@ -83,7 +83,9 @@ def get_error_messages(logs: Dict) -> List[str]:
         stream_name = log.get("stream_name", "stderr")
         data = log.get("data", "")
         if stream_name == "stderr" and not (
-            data.startswith("[NbConvertApp]") or data.startswith("WARNING:") or data.startswith("  Running command")
+            data.startswith("[NbConvertApp]")
+            or data.startswith("WARNING:")
+            or data.startswith("  Running command")
         ):
             result.append(data)
     return result
@@ -140,12 +142,14 @@ def upload_requirement_pkgs(
 
 
 def push_install_kernel(
-    api: KaggleApi, meta_data: Dict, quiet: bool = False
+    api: KaggleApi,
+    meta_data: Dict,
+    enable_constraint: bool,
+    extra_dependencies: List[str],
+    quiet: bool = False,
 ) -> KernelPushResponse:
-    enable_constraint = meta_data.get("enable_constraint", False)
-
     kernel_push_params = create_kernel_push_params(api, meta_data)
-    dependencies = get_dependencies(enable_constraint)
+    dependencies = [*get_dependencies(enable_constraint), *extra_dependencies]
     kernel_body = create_kernel_body(dependencies)
     kernel_response = kernel_proc.push(api, kernel_push_params, kernel_body)
     if not quiet:
@@ -161,8 +165,13 @@ def install(
 ) -> None:
     if "meta_data" not in kkt:
         raise MetaDataNotFound()
+
     meta_data = kkt["meta_data"].value
-    kernel_response = push_install_kernel(api, meta_data, quiet)
+    enable_constraint = kkt.get("enable_constraint", False)
+    extra_dependencies = kkt.get("extra_dependencies", [])
+    kernel_response = push_install_kernel(
+        api, meta_data, enable_constraint, extra_dependencies, quiet
+    )
 
     kernel_slug = get_kernel_slug_from(kernel_response)
     kernel_output = wait_for_install_kernel_completion(
