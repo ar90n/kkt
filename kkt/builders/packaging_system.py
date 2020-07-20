@@ -12,6 +12,8 @@ from .package import Package
 
 
 def _get_pkg_name(require, enable_constraint: bool = False):
+    if require.is_url():
+        return require.url
     if enable_constraint or require.is_vcs():
         return require.base_pep_508_name
     return require.name
