@@ -106,11 +106,11 @@ def confirm_add_package_source(project_name: str):
 
 def add_package_source(project_root_path: Path, project_name: str) -> None:
     pkg_dir_path = project_root_path / "src" / project_name
-    print(pkg_dir_path)
+    click.echo(pkg_dir_path)
     pkg_dir_path.mkdir(parents=True, exist_ok=True)
 
     init_file_path = pkg_dir_path / "__init__.py"
-    print(init_file_path)
+    click.echo(init_file_path)
     init_file_path.touch()
 
 
@@ -128,16 +128,13 @@ def init(
     parser.write(kkt)
 
     project_name = get_project_name(parser)
-    print(project_name)
     if project_name is None:
-        print("no name")
+        click.echo("Project name is Empty")
         return
 
     project_root_path = pyproject_path.parent
     if has_package_source(project_root_path, project_name):
-        print("has")
         return
 
     if confirm_add_package_source(project_name):
-        print("add")
         add_package_source(project_root_path, project_name)
