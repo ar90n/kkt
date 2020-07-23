@@ -21,36 +21,37 @@ def create_kernel_body(
 ) -> str:
     return f"""
 import os
+import sys
 import subprocess
 from pathlib import Path
 
 def pip_freeze():
-    args = ["pip", "freeze"]
-    proc = subprocess.Popen(args, stdout=subprocess.PIPE)
-    run_result = proc.communicate()
-    return run_result[0].decode("utf-8").split("\\n")
+    args = [sys.executable, "-m", "pip", "freeze"]
+    output = subprocess.run(args, capture_output=True, encoding='utf-8', check=True).stdout
+    return output.split("\\n")
 
-def pip_install(pkgs):
+def pip_install(pkgs, ignore_error=False):
     if len(pkgs) == 0:
         return
-    args = ["pip", "install", *pkgs]
-    proc = subprocess.Popen(args, stdout=subprocess.PIPE)
-    return proc.communicate()[0].decode("utf-8")
+    args = [sys.executable, "-m", "pip", "install", *pkgs]
+    try:
+        ret = subprocess.run(args, capture_output=True, encoding='utf-8', check=True).stdout
+    except subprocess.CalledProcessError as e:
+        ret = str(e.stdout)
+    return ret
 
 def deb_install(pkgs):
     if len(pkgs) == 0:
         return
     args = ["apt-get", "install", "-y", *pkgs]
-    proc = subprocess.Popen(args, stdout=subprocess.PIPE)
-    return proc.communicate()[0].decode("utf-8")
+    return subprocess.run(args, capture_output=True, encoding='utf-8', check=True).stdout
 
 def pip_download(pkgs):
     Path("./pip").mkdir(exist_ok=True)
     if len(pkgs) == 0:
         return ""
-    args = ["pip", "download", "--no-deps", "-d", "pip", *pkgs]
-    proc = subprocess.Popen(args, stdout=subprocess.PIPE)
-    return proc.communicate()[0].decode("utf-8")
+    args = [sys.executable, "-m", "pip", "download", "--no-deps", "-d", "pip", *pkgs]
+    return subprocess.run(args, capture_output=True, encoding='utf-8', check=True).stdout
 
 def deb_download(pkgs):
     dst_dir_path = Path("./deb")
@@ -66,7 +67,7 @@ deb_download({extra_deb_pkgs})
 
 freeze_before_install = pip_freeze()
 print(pip_install({python_pkgs}))
-print(pip_install({extra_python_pkgs}))
+print(pip_install({extra_python_pkgs}), True)
 freeze_after_install = pip_freeze()
 diff_pkgs = set(freeze_after_install) - set(freeze_before_install)
 print(pip_download(diff_pkgs))
@@ -135,7 +136,8 @@ def wait_for_install_kernel_completion(
         )
 
         if response["log"] != "":
-            result = kernel_proc.status(api, f"{owner_slug}/{kernel_slug}")
+            time.sleep(1)  # wait for completion of synchlonizing kernel status
+            result = kernel_proc.status(api, kernel_slug)
             if result["status"] != "complete" or result["failureMessage"]:
                 logs = json.loads(response["log"])
                 err_messages = get_error_messages(logs)
