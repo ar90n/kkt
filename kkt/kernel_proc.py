@@ -139,7 +139,7 @@ def create_dataset(
         convert_to_csv=False,
         category_ids=[],
     )
-    api.upload_files(request, None, target_dir, quiet)
+    api.upload_files(request, None, target_dir, quiet, dir_mode="tar")
 
     result = DatasetNewResponse(
         api.process_response(api.datasets_create_new_with_http_info(request))
@@ -164,7 +164,7 @@ def update_dataset(
         category_ids=[],
         delete_old_versions=delete_old_versions,
     )
-    api.upload_files(request, None, target_dir, quiet)
+    api.upload_files(request, None, target_dir, quiet, dir_mode="tar")
 
     result = DatasetNewVersionResponse(
         api.process_response(
