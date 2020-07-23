@@ -13,10 +13,18 @@ BOOTSTRAP_TEMPLATE: str = """def __bootstrap__():
     from pathlib import Path
     from tempfile import TemporaryDirectory
 
-    # install required packages
     pkg_dataset_path = Path.cwd().parent / "input" / "{pkg_dataset}"
+
+    # install deb packages
+    deb_pkgs_path = pkg_dataset_path / "deb"
+    deb_path_list = [str(p) for p in deb_pkgs_path.glob("*.deb")]
+    if 0 < len(deb_path_list):
+        subprocess.run(["dpkg", "-i", *deb_path_list])
+
+    # install required packages
+    pip_pkgs_path = pkg_dataset_path / "pip"
     pkg_path_list = []
-    for p in pkg_dataset_path.glob("*"):
+    for p in pip_pkgs_path.glob("*"):
         if p.is_dir():
             pkg_config_files = [str(p.parent) for p in p.glob("**/*") if p.name in ["pyproject.toml", "setup.py"]]
             pkg_root_dir = min(pkg_config_files, key=len)

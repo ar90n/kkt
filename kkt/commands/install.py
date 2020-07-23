@@ -16,9 +16,13 @@ from .kkt_command import kkt_command
 from ..fetch import PackageLocation, fetch_packages
 
 
-def create_kernel_body(install_pkgs: List[str]) -> str:
+def create_kernel_body(
+    python_pkgs: List[str], extra_python_pkgs: List[str], extra_deb_pkgs: List[str]
+) -> str:
     return f"""
+import os
 import subprocess
+from pathlib import Path
 
 def pip_freeze():
     args = ["pip", "freeze"]
@@ -33,17 +37,37 @@ def pip_install(pkgs):
     proc = subprocess.Popen(args, stdout=subprocess.PIPE)
     return proc.communicate()[0].decode("utf-8")
 
-def pip_download(pkgs):
+def deb_install(pkgs):
     if len(pkgs) == 0:
-        return ""
-    args = ["pip", "download", "--no-deps", *pkgs]
+        return
+    args = ["apt-get", "install", "-y", *pkgs]
     proc = subprocess.Popen(args, stdout=subprocess.PIPE)
     return proc.communicate()[0].decode("utf-8")
 
-freeze_before_install = pip_freeze()
-print(pip_install({install_pkgs}))
-freeze_after_install = pip_freeze()
+def pip_download(pkgs):
+    Path("./pip").mkdir(exist_ok=True)
+    if len(pkgs) == 0:
+        return ""
+    args = ["pip", "download", "--no-deps", "-d", "pip", *pkgs]
+    proc = subprocess.Popen(args, stdout=subprocess.PIPE)
+    return proc.communicate()[0].decode("utf-8")
 
+def deb_download(pkgs):
+    dst_dir_path = Path("./deb")
+    dst_dir_path.mkdir(exist_ok=True)
+    if len(pkgs) == 0:
+        return ""
+    args = ["apt-get", "-o", "Dir::Cache::archives='/kaggle/working/deb/'", "install", "-y", *pkgs]
+    os.system(" ".join(args))
+    (dst_dir_path / "lock").unlink()
+    (dst_dir_path / "partial").rmdir()
+
+deb_download({extra_deb_pkgs})
+
+freeze_before_install = pip_freeze()
+print(pip_install({python_pkgs}))
+print(pip_install({extra_python_pkgs}))
+freeze_after_install = pip_freeze()
 diff_pkgs = set(freeze_after_install) - set(freeze_before_install)
 print(pip_download(diff_pkgs))
 """
@@ -148,11 +172,14 @@ def push_install_kernel(
     meta_data: Dict,
     enable_constraint: bool,
     extra_dependencies: List[str],
+    extra_deb_dependencies: List[str],
     quiet: bool = False,
 ) -> KernelPushResponse:
     kernel_push_params = create_kernel_push_params(api, meta_data)
-    dependencies = [*get_dependencies(enable_constraint), *extra_dependencies]
-    kernel_body = create_kernel_body(dependencies)
+    dependencies = get_dependencies(enable_constraint)
+    kernel_body = create_kernel_body(
+        dependencies, extra_dependencies, extra_deb_dependencies
+    )
     kernel_response = kernel_proc.push(api, kernel_push_params, kernel_body)
     if not quiet:
         kernel_proc.print_response(kernel_response)
@@ -171,8 +198,14 @@ def install(
     meta_data = kkt["meta_data"].value
     enable_constraint = kkt.get("enable_constraint", False)
     extra_dependencies = kkt.get("extra_dependencies", [])
+    extra_deb_dependencies = kkt.get("extra_deb_dependencies", [])
     kernel_response = push_install_kernel(
-        api, meta_data, enable_constraint, extra_dependencies, quiet
+        api,
+        meta_data,
+        enable_constraint,
+        extra_dependencies,
+        extra_deb_dependencies,
+        quiet,
     )
 
     kernel_slug = get_kernel_slug_from(kernel_response)
@@ -182,6 +215,9 @@ def install(
 
     with TemporaryDirectory() as tmp_dir:
         target_dir = Path(tmp_dir)
+        (target_dir / "pip").mkdir(exist_ok=True)
+        (target_dir / "deb").mkdir(exist_ok=True)
+
         pkg_locations = _get_package_locations(kernel_output)
         fetch_files = fetch_packages(pkg_locations, target_dir, quiet=quiet)
         if len(fetch_files) == 0:
