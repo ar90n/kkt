@@ -52,8 +52,7 @@ print(pip_download(diff_pkgs))
 def create_kernel_push_params(
     api: KaggleApi, meta_data: Dict
 ) -> kernel_proc.KernelPushParams:
-    slug = meta_data["slug"]
-    install_kernel_slug = f"{slug}-install"
+    install_kernel_slug = get_install_slug(meta_data)
     install_kernel_meta_data = {
         **meta_data,
         "slug": install_kernel_slug,
@@ -67,6 +66,10 @@ def create_kernel_push_params(
         "keywords": [],
     }
     return kernel_proc.KernelPushParams.of(api, install_kernel_meta_data)
+
+
+def get_install_slug(meta_data: Dict) -> str:
+    return f"{meta_data['slug']}-install"
 
 
 def get_owner_slug_from(response: KernelPushResponse):
@@ -99,22 +102,21 @@ def _get_package_locations(list_response: Dict[str, Any]) -> List[PackageLocatio
 
 
 def wait_for_install_kernel_completion(
-    api: KaggleApi, kernel_slug: str, quiet: bool = False
+    api: KaggleApi, meta_data: Dict, kernel_slug: str, quiet: bool = False
 ) -> Dict[str, Any]:
+    owner_slug = get_username(api)
     while True:
-        owner_slug = get_username(api)
         response = api.process_response(
             api.kernel_output_with_http_info(owner_slug, kernel_slug)
         )
 
         if response["log"] != "":
-            logs = json.loads(response["log"])
-            err_messages = get_error_messages(logs)
-            if 0 < len(err_messages):
+            result = kernel_proc.status(api, f"{owner_slug}/{kernel_slug}")
+            if result["status"] != "complete" or result["failureMessage"]:
+                logs = json.loads(response["log"])
+                err_messages = get_error_messages(logs)
                 raise InstallKernelError(err_messages)
-            if 0 < len(logs):
-                return response
-
+            return response
         if not quiet:
             click.echo("Wait for install kernel completion...")
         time.sleep(10)
@@ -175,7 +177,7 @@ def install(
 
     kernel_slug = get_kernel_slug_from(kernel_response)
     kernel_output = wait_for_install_kernel_completion(
-        api, kernel_slug=kernel_slug, quiet=quiet
+        api, meta_data=meta_data, kernel_slug=kernel_slug, quiet=quiet
     )
 
     with TemporaryDirectory() as tmp_dir:

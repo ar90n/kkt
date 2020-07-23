@@ -40,7 +40,7 @@ from kkt.commands.install import install
 def test_commands_install(
     given, expected, virtualenv, chdatadir, cli_runner, kaggle_api, monkeypatch
 ):
-    api = kaggle_api(None, None, given["user"], given["is_update"])
+    api = kaggle_api("complete", None, given["user"], given["is_update"])
     monkeypatch.setattr("kkt.commands.kkt_command.get_kaggle_api", lambda: api)
 
     proj_path = chdatadir / given["slug"]
