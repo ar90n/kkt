@@ -25,6 +25,7 @@ DEFAULT_KKT_CONFIG: Dict = {
         "kernel_data_sources": [],
         "competition_sources": [],
         "keywords": [],
+        "prologue": ""
     },
     "enable_git_tag": False,
     "enable_constraint": False,

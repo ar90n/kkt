@@ -9,7 +9,7 @@ from .kernels import KERNEL_CREATEORS
 from .package import Package
 from .packaging_system import build_packages, get_dependencies
 
-Builder = Callable[[IO[str], str, Dict], str]
+Builder = Callable[[IO[str], str, str, Dict, bool, bool], str]
 
 
 def create_encoded_archive(pkgs: Iterable[Package]) -> str:
@@ -31,6 +31,7 @@ def get_builder(kernel_type: str) -> Builder:
     def _builder(
         kernel_body_io: IO[str],
         pkg_dataset: str,
+        prologue: str,
         env_variables: Dict,
         enable_internet: bool,
         enable_constraint: bool,
@@ -44,6 +45,7 @@ def get_builder(kernel_type: str) -> Builder:
             pkg_dataset=pkg_dataset,
             env_variables=env_variables,
             dependencies=dependencies,
+            prologue=prologue,
             enable_internet=enable_internet,
         )
 

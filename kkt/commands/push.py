@@ -18,6 +18,7 @@ def create_kernel_body(meta_data: Dict, pkg_dataset, env_variables: Dict) -> str
     enable_internet = meta_data.get("enable_internet", False)
     enable_constraint = meta_data.get("enable_constraint", False)
     kernel_type = meta_data.get("kernel_type", "script")
+    prologue = meta_data.get("prologue", "")
     code_file_path = Path(meta_data.get("code_file", "main.py"))
     if not code_file_path.is_absolute():
         code_file_path = Path.cwd() / code_file_path
@@ -25,7 +26,12 @@ def create_kernel_body(meta_data: Dict, pkg_dataset, env_variables: Dict) -> str
     kernel_builder = get_builder(kernel_type)
     with code_file_path.open() as fp:
         return kernel_builder(
-            fp, pkg_dataset, env_variables, enable_internet, enable_constraint
+            fp,
+            pkg_dataset,
+            prologue,
+            env_variables,
+            enable_internet,
+            enable_constraint,
         )
 
 

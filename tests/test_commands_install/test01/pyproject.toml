@@ -5,7 +5,7 @@ description = ""
 authors = ["Masahiro Wada <argon.argon.argon@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 typer = "^0.3.0"
 
 

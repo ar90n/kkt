@@ -27,6 +27,7 @@ from kkt.exception import (
                     "kernel_data_sources": ["normal"],
                     "competition_sources": ["normal"],
                     "keywords": ["normal"],
+                    "prologue": ""
                 },
                 "enable_git_tag": True,
                 "enable_constraint": True,
@@ -47,6 +48,7 @@ from kkt.exception import (
                     "kernel_data_sources": [],
                     "competition_sources": [],
                     "keywords": [],
+                    "prologue": ""
                 },
                 "enable_git_tag": False,
                 "enable_constraint": False,
@@ -68,6 +70,7 @@ from kkt.exception import (
                     "kernel_data_sources": ["multi_data"],
                     "competition_sources": ["multi_data"],
                     "keywords": ["multi_data"],
+                    "prologue": ""
                 },
                 "enable_git_tag": False,
                 "enable_constraint": False,
@@ -89,6 +92,7 @@ from kkt.exception import (
                     "kernel_data_sources": ["multi_data"],
                     "competition_sources": ["multi_data"],
                     "keywords": ["multi_data"],
+                    "prologue": ""
                 },
                 "enable_git_tag": False,
                 "enable_constraint": False,
@@ -111,6 +115,7 @@ from kkt.exception import (
                     "kernel_data_sources": ["multi_data"],
                     "competition_sources": ["multi_data"],
                     "keywords": ["multi_data"],
+                    "prologue": ""
                 },
                 "enable_git_tag": False,
                 "enable_constraint": False,

@@ -17,9 +17,12 @@ from ..fetch import PackageLocation, fetch_packages
 
 
 def create_kernel_body(
-    python_pkgs: List[str], extra_python_pkgs: List[str], extra_deb_pkgs: List[str]
+    python_pkgs: List[str],
+    extra_python_pkgs: List[str],
+    extra_deb_pkgs: List[str],
+    prologue: str,
 ) -> str:
-    return f"""
+    return f"""{prologue}
 import os
 import sys
 import subprocess
@@ -179,8 +182,9 @@ def push_install_kernel(
 ) -> KernelPushResponse:
     kernel_push_params = create_kernel_push_params(api, meta_data)
     dependencies = get_dependencies(enable_constraint)
+    prologue = meta_data.get("prologue", "")
     kernel_body = create_kernel_body(
-        dependencies, extra_dependencies, extra_deb_dependencies
+        dependencies, extra_dependencies, extra_deb_dependencies, prologue
     )
     kernel_response = kernel_proc.push(api, kernel_push_params, kernel_body)
     if not quiet:

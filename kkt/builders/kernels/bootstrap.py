@@ -19,7 +19,8 @@ BOOTSTRAP_TEMPLATE: str = """def __bootstrap__():
     deb_pkgs_path = pkg_dataset_path / "deb"
     deb_path_list = [str(p) for p in deb_pkgs_path.glob("*.deb")]
     if 0 < len(deb_path_list):
-        subprocess.run(["dpkg", "-i", *deb_path_list])
+        output = subprocess.run(["dpkg", "-i", *deb_path_list], capture_output=True, encoding="utf-8", check=True).stdout
+        print(output)
 
     # install required packages
     pip_pkgs_path = pkg_dataset_path / "pip"
@@ -32,11 +33,13 @@ BOOTSTRAP_TEMPLATE: str = """def __bootstrap__():
         else:
             pkg_path_list.append(str(p))
     if 0 < len(pkg_path_list):
-        subprocess.run(["pip", "install", "--no-deps", *pkg_path_list])
+        output = subprocess.run(["pip", "install", "--no-deps", *pkg_path_list], capture_output=True, encoding="utf-8", check=True).stdout
+        print(output)
 
     if 0 < len({dependencies}):
         args = ["pip", "install", *{dependencies}]
-        subprocess.run(args)
+        output = subprocess.run(args, capture_output=True, encoding="utf-8", check=True).stdout
+        print(output)
 
     # this is base64 encoded source code
     tar_io = io.BytesIO(gzip.decompress(base64.b64decode("{pkg_encoded}")))
@@ -46,7 +49,8 @@ BOOTSTRAP_TEMPLATE: str = """def __bootstrap__():
                 pkg_path = Path(temp_dir) / f"{{member.name}}"
                 content_bytes = tar.extractfile(member).read()
                 pkg_path.write_bytes(content_bytes)
-                os.system("pip install --no-deps {{pkg_path}}".format(pkg_path=pkg_path))
+                output = subprocess.run(["pip", "install", "--no-deps", pkg_path], capture_output=True, encoding="utf-8", check=True).stdout
+                print(output)
 
     sys.path.append("/kaggle/working")
     os.environ.update({env_variables})

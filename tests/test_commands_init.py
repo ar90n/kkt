@@ -76,6 +76,7 @@ def test_commands_init(chdatadir, cli_runner, kaggle_api, monkeypatch):
             "kernel_data_sources": [],
             "competition_sources": ["comp"],
             "keywords": [],
+            "prologue": ""
         },
         "enable_git_tag": True,
         "enable_constraint": True,
