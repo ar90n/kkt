@@ -12,6 +12,13 @@ BOOTSTRAP_TEMPLATE: str = """def __bootstrap__():
     import subprocess
     from pathlib import Path
     from tempfile import TemporaryDirectory
+    try:
+        from kaggle_secrets import UserSecretsClient
+        from kaggle_web_client import BackendError
+        has_kaggle_packages = True
+    except ImportError:
+        has_kaggle_packages = False
+
 
     pkg_dataset_path = Path.cwd().parent / "input" / "{pkg_dataset}"
 
@@ -53,6 +60,17 @@ BOOTSTRAP_TEMPLATE: str = """def __bootstrap__():
                 print(output)
 
     sys.path.append("/kaggle/working")
+
+    # Add secrets to environment variables
+    if has_kaggle_packages:
+        user_secrets = UserSecretsClient()
+        for k in {secret_keys}:
+            try:
+                os.environ[k] = user_secrets.get_secret(k)
+            except BackendError:
+                pass
+
+    # Update environment variables
     os.environ.update({env_variables})
 __bootstrap__()"""
 
@@ -62,6 +80,7 @@ def create_bootstrap_code(
     pkg_dataset: str,
     env_variables: Dict,
     dependencies: Iterable[str],
+    secret_keys: Iterable[str],
     enable_internet: bool = False,
 ) -> str:
     return BOOTSTRAP_TEMPLATE.format(
@@ -69,5 +88,6 @@ def create_bootstrap_code(
         pkg_dataset=pkg_dataset,
         env_variables=json.dumps(env_variables),
         dependencies=json.dumps(dependencies),
+        secret_keys=json.dumps(secret_keys),
         encoding="utf8",
     )

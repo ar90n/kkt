@@ -27,6 +27,7 @@ def create_bootstrap_cell(
     pkg_dataset: str,
     env_variables: Dict,
     dependencies: Iterable[str],
+    secret_keys: Iterable[str],
     enable_internet: bool = False,
 ) -> Dict:
     bootstrap_code = create_bootstrap_code(
@@ -34,6 +35,7 @@ def create_bootstrap_cell(
         pkg_dataset=pkg_dataset,
         env_variables=env_variables,
         dependencies=dependencies,
+        secret_keys=secret_keys,
         enable_internet=enable_internet,
     )
     return {
@@ -51,6 +53,7 @@ def create_notebook_kernel(
     pkg_dataset: str,
     env_variables: Dict,
     dependencies: Iterable[str],
+    secret_keys: Iterable[str],
     prologue: str,
     enable_internet: bool = False,
 ) -> str:
@@ -61,6 +64,7 @@ def create_notebook_kernel(
         pkg_dataset=pkg_dataset,
         env_variables=env_variables,
         dependencies=dependencies,
+        secret_keys=secret_keys,
         enable_internet=enable_internet,
     )
     notebook_obj.setdefault("cells", []).insert(0, bootstrap_cell)

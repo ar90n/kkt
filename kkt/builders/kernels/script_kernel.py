@@ -16,6 +16,7 @@ def create_script_kernel(
     pkg_dataset: str,
     env_variables: Dict,
     dependencies: Iterable[str],
+    secret_keys: Iterable[str],
     prologue: str,
     enable_internet: bool = False,
 ) -> str:
@@ -24,6 +25,7 @@ def create_script_kernel(
         pkg_dataset=pkg_dataset,
         env_variables=env_variables,
         dependencies=dependencies,
+        secret_keys=secret_keys,
         enable_internet=enable_internet,
     )
     return SCRIPT_TEMPLATE.format(

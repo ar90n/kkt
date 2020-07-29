@@ -123,6 +123,7 @@ def test_commands_push(
     )
     actual_kernel_output = "\n".join(actual_kernel_output.split("\n")[2:])
     expect_kernel_output = f"""Successfully installed kkt-commands-push-test-without-git-0.1.0
+
 {expected_envs["ENV001"]}
 {expected_envs["ENV002"]}
 """

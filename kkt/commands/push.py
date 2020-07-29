@@ -1,7 +1,7 @@
 import os
 import re
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Iterable
 
 from kaggle import KaggleApi
 from kaggle.models.kaggle_models_extended import KernelPushResponse
@@ -14,7 +14,9 @@ from ..repo import Repo
 from .kkt_command import kkt_command
 
 
-def create_kernel_body(meta_data: Dict, pkg_dataset, env_variables: Dict) -> str:
+def create_kernel_body(
+    meta_data: Dict, pkg_dataset, env_variables: Dict, secret_keys: Iterable[str]
+) -> str:
     enable_internet = meta_data.get("enable_internet", False)
     enable_constraint = meta_data.get("enable_constraint", False)
     kernel_type = meta_data.get("kernel_type", "script")
@@ -30,19 +32,22 @@ def create_kernel_body(meta_data: Dict, pkg_dataset, env_variables: Dict) -> str
             pkg_dataset,
             prologue,
             env_variables,
+            secret_keys,
             enable_internet,
             enable_constraint,
         )
 
 
 def push_impl(
-    api: KaggleApi, meta_data: Dict, env_variables: Dict
+    api: KaggleApi, meta_data: Dict, env_variables: Dict, secret_keys: Iterable[str]
 ) -> KernelPushResponse:
 
     dataset_slug = get_dataset_slug(api, meta_data)
     dataset_name = dataset_slug.split("/")[-1]
 
-    kernel_body = create_kernel_body(meta_data, dataset_name, env_variables)
+    kernel_body = create_kernel_body(
+        meta_data, dataset_name, env_variables, secret_keys
+    )
     kernel_push_param = kernel_proc.KernelPushParams.of(api, meta_data)
     kernel_push_param.dataset_data_sources.append(dataset_slug)
     return kernel_proc.push(api, kernel_push_param, kernel_body)
@@ -70,8 +75,9 @@ def push(api: KaggleApi, kkt: Dict, pyproject_path: Path, **kwargs: Dict) -> Non
 
     meta_data = kkt["meta_data"].value
     env_variables = get_env_variables(kkt.get("environment_variables", {}))
+    secret_keys = kkt.get("secret_keys", [])
 
-    result = push_impl(api, meta_data, env_variables)
+    result = push_impl(api, meta_data, env_variables, secret_keys)
     kernel_proc.print_response(result)
 
     if enable_git_tag and result.versionNumber:
