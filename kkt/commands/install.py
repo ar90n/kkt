@@ -139,7 +139,7 @@ def wait_for_install_kernel_completion(
         )
 
         if response["log"] != "":
-            time.sleep(1)  # wait for completion of synchlonizing kernel status
+            time.sleep(5)  # wait for completion of synchlonizing kernel status
             result = kernel_proc.status(api, kernel_slug)
             if result["status"] != "complete" or result["failureMessage"]:
                 logs = json.loads(response["log"])
@@ -194,7 +194,7 @@ def push_install_kernel(
     return kernel_response
 
 
-@kkt_command()
+@kkt_command(is_global_command=True)
 def install(
     api: KaggleApi, kkt: Dict, pyproject_path: Path, quiet: bool = False, **kwargs: Dict
 ) -> None:

@@ -22,7 +22,7 @@ def _print_paths(paths: List[Path]) -> None:
         click.echo(f"save to:{str(p)}")
 
 
-@kkt_command()
+@kkt_command(is_global_command=True)
 @click.argument("dst_dir")
 def download(
     api: KaggleApi, kkt: Dict, pyproject_path: Path, quiet: bool = False, **kwargs

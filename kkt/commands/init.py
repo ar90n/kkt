@@ -114,7 +114,7 @@ def add_package_source(project_root_path: Path, project_name: str) -> None:
     init_file_path.touch()
 
 
-@kkt_command(init=True)
+@kkt_command(is_global_command=True)
 def init(
     api: KaggleApi, kkt: Dict, pyproject_path: Path, *args: List, **kwargs: Dict
 ) -> None:

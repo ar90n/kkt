@@ -19,14 +19,14 @@ def get_kaggle_api() -> Any:
     return KaggleApi(ApiClient())
 
 
-def _wrap_click_command(f: Callable, init: bool) -> Command:
-    if not init:
+def _wrap_click_command(f: Callable, is_global_command: bool) -> Command:
+    if not is_global_command:
         f = click.option("-t", "--target", default=".", type=str)(f)
     f = click.option("-q", "--quiet", is_flag=True)(f)
     return click.command()(f)
 
 
-def kkt_command(init: bool = False, cwd: Optional[Path] = None) -> Wrapper:
+def kkt_command(is_global_command: bool = False, cwd: Optional[Path] = None) -> Wrapper:
     def _wrapper(command: Callable) -> Command:
         @wraps(command)
         def _f(*args: List, **kwargs: Dict) -> None:
@@ -39,7 +39,7 @@ def kkt_command(init: bool = False, cwd: Optional[Path] = None) -> Wrapper:
                 target = cast("str", kwargs.get("target", "."))
                 kkt = parser.read(key=target)
             except KktSectionNotFound:
-                if not init:
+                if not is_global_command:
                     click.echo("Kkt section is not found in pyproject.yml.", err=True)
                     sys.exit(1)
                 kkt = {}
@@ -49,6 +49,6 @@ def kkt_command(init: bool = False, cwd: Optional[Path] = None) -> Wrapper:
 
             command(api, kkt, pyproject_path, *args, **kwargs)
 
-        return _wrap_click_command(_f, init)
+        return _wrap_click_command(_f, is_global_command)
 
     return _wrapper
