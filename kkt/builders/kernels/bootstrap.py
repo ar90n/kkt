@@ -30,20 +30,26 @@ BOOTSTRAP_TEMPLATE: str = """def __bootstrap__():
         print(output)
 
     # install required packages
-    pip_pkgs_path = pkg_dataset_path / "pip"
     pkg_path_list = []
-    for p in pip_pkgs_path.glob("*"):
-        if p.is_dir():
-            pkg_config_files = [str(p.parent) for p in p.glob("**/*") if p.name in ["pyproject.toml", "setup.py"]]
-            pkg_root_dir = min(pkg_config_files, key=len)
-            pkg_path_list.append(pkg_root_dir)
-        else:
-            pkg_path_list.append(str(p))
+    def _find_pkgs(dir):
+        children = list(dir.glob("*"))
+        if 0 < len([p.name for p in children if p.name in ["pyproject.toml", "setup.py"]]):
+            pkg_path_list.append(str(dir))
+            return
+
+        for p in children:
+            if p.is_dir():
+                _find_pkgs(p)
+            else:
+                pkg_path_list.append(str(p))
+    pip_pkgs_path = pkg_dataset_path / "pip"
+    _find_pkgs(pip_pkgs_path)
+
     if 0 < len(pkg_path_list):
         output = subprocess.run(["pip", "install", "--no-deps", *pkg_path_list], capture_output=True, encoding="utf-8", check=True).stdout
         print(output)
 
-    if 0 < len({dependencies}):
+    if {enable_internet} and 0 < len({dependencies}):
         args = ["pip", "install", *{dependencies}]
         output = subprocess.run(args, capture_output=True, encoding="utf-8", check=True).stdout
         print(output)
@@ -62,7 +68,7 @@ BOOTSTRAP_TEMPLATE: str = """def __bootstrap__():
     sys.path.append("/kaggle/working")
 
     # Add secrets to environment variables
-    if has_kaggle_packages:
+    if {enable_internet} and has_kaggle_packages:
         user_secrets = UserSecretsClient()
         for k in {secret_keys}:
             try:
@@ -89,5 +95,6 @@ def create_bootstrap_code(
         env_variables=json.dumps(env_variables),
         dependencies=json.dumps(dependencies),
         secret_keys=json.dumps(secret_keys),
+        enable_internet=enable_internet,
         encoding="utf8",
     )
